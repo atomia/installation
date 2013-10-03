@@ -1,0 +1,51 @@
+{
+  "author": "puppetlabs",
+  "types": [
+    {
+      "doc": "Manages Windows features via dism.",
+      "parameters": [
+        {
+          "doc": "The Windows feature name (case-sensitive).",
+          "name": "name"
+        },
+        {
+          "doc": "The answer file for installing the feature.",
+          "name": "answer"
+        }
+      ],
+      "providers": [
+        {
+          "doc": "Manages Windows features for Windows 2008R2 and Windows 7\n\nDefault for `operatingsystem` == `windows`.",
+          "name": "dism"
+        }
+      ],
+      "name": "dism",
+      "properties": [
+        {
+          "doc": "Windows feature install state.  Valid values are `present`, `absent`, `present`, `absent`.",
+          "name": "ensure"
+        }
+      ]
+    }
+  ],
+  "version": "0.1.0",
+  "license": "Apache 2.0",
+  "project_page": "https://github.com/puppetlabs/puppetlabs-dism",
+  "source": "git@github.com:puppetlabs/puppetlabs-dism.git",
+  "checksums": {
+    "spec/spec_helper.rb": "661d6045a62b345630d46be613d65b90",
+    "spec/fixtures/site.pp": "d41d8cd98f00b204e9800998ecf8427e",
+    "README.md": "6e702d2c1ee6243bc4ada1ec0bb01f14",
+    "Rakefile": "bc7767ba77c2a685258184dbe91d8dda",
+    "lib/puppet/type/dism.rb": "f015233306c9531b8b74d22090cf33c7",
+    "spec/fixtures/dism_get_features": "0041d5fd618655cf4863975e83c868cd",
+    "Modulefile": "0f1e046f8401bbb28bffa33524bd3bfb",
+    "lib/puppet/provider/dism/dism.rb": "b827f16a20c9be8555fc492ef2ed7ffa"
+  },
+  "dependencies": [
+
+  ],
+  "name": "puppetlabs-dism",
+  "summary": "Windows DISM puppet module",
+  "description": "Windows Deployment Image Servicing and Management (DISM) Puppet Module."
+}

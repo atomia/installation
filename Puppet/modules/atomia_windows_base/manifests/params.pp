@@ -1,0 +1,37 @@
+class atomia_windows_base::params {
+
+        $app_password                                   = ""
+        $ad_domain                                      = "ad.atomia.com"
+        $database_server                                = "127.0.0.1"
+        $appdomain                                      = "atomia.com"
+        $actiontrail                                    = "actiontrail"
+        $login                                          = "login"
+        $order                                          = "order" 
+        $billing                                        = "billing"
+        $admin                                          = "admin"
+        $hcp                                            = "hcp"
+        $automationserver                               = "automationserver"
+
+        $automationserver_encryption_cert_thumb         = ""
+        $billing_encryption_cert_thumb                  = ""
+        $root_cert_thumb                                = ""
+        $signing_cert_thumb                             = ""
+
+        $billing_plugin_config                          = "Atomia.Billing.Plugins.Demo.Configuration.PluginsConfiguration, Atomia.Billing.Plugins.Demo.Configuration"
+        $send_invoice_email_subject_format              = "Faktura - {0}"
+        $domainreg_service_url                          = "http://domainreg.atomia.com/Domainreg"
+        $domainreg_service_username                     = ""
+        $domainreg_service_password                     = ""
+        $actiontrail_ip                                 = "127.0.0.1"
+        $mail_sender_address                            = "noreply@atomia.com"
+        $mail_server_host                               = "127.0.0.1"
+        $mail_server_port                               = "25"
+        $mail_server_username                           = ""
+        $mail_server_password                           = ""
+        $mail_server_use_ssl                            = "false"
+        $mail_bcc_list                                  = ""
+        $mail_reply_to                                  = ""
+        $storage_server_hostname                        = "storage.atomia.com"
+        $mail_dispatcher_interval                       = "30"
+
+}

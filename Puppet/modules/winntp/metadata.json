@@ -1,0 +1,26 @@
+{
+  "source": "",
+  "description": "A very simple module for configuring the w32time service. See the project page for details.",
+  "types": [
+
+  ],
+  "summary": "Manage the win32time service.",
+  "author": "adam_denning",
+  "name": "adenning-winntp",
+  "project_page": "https://github.com/adenning/winntp",
+  "version": "0.0.1",
+  "checksums": {
+    "tests/init.pp": "f9b848a7b81e872ff915cf7beb236ec1",
+    "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+    "NOTICE": "246989993b576e4b09bb709078aa0c13",
+    "README.md": "438c42e6446a71314d0fbc8154248483",
+    "LICENSE": "2b42edef8fa55315f34f2370b4715ca9",
+    "Modulefile": "53efd185050e47958170a04342ba1daf",
+    "manifests/init.pp": "aa46a3f0e9f8c46080e6946d130ed192",
+    "spec/spec_helper.rb": "3ea886dd135e120afa31e0aab12e85b0"
+  },
+  "dependencies": [
+
+  ],
+  "license": "Apache 2"
+}

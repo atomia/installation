@@ -1,0 +1,28 @@
+{
+  "name": "joshcooper-powershell",
+  "version": "0.0.5",
+  "source": "git://github.com/joshcooper/puppetlabs-powershell.git",
+  "author": "Josh Cooper",
+  "license": "Apache License, Version 2.0",
+  "summary": "A PowerShell provider for puppet.",
+  "description": "A PowerShell provider for puppet.",
+  "project_page": "http://links.puppetlabs.com/powershell-module",
+  "dependencies": [
+
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "Gemfile": "196d72ebae2536354824bb2b2c0866f2",
+    "Gemfile.lock": "18527ed81f0aca89231a4d0f09bba99c",
+    "Modulefile": "cfcc7222fe5a4d7899a9b6f7ed4f7bfb",
+    "README.md": "522a1499fa1b95a383d777a1718a9ecf",
+    "Rakefile": "6fbfccae2e2f2d6456f10390e950bd3d",
+    "example.ps1": "38566888e4a4d9f26da05bebf64d98bd",
+    "lib/puppet/provider/exec/powershell.rb": "98b3575f534d2a45ea96d29f5b09dc13",
+    "spec/spec_helper.rb": "fc0ee3c4cbe0c9500c277602a8261d6e",
+    "spec/unit/provider/exec/powershell_spec.rb": "c87b15dd06e8860af3ffb15a4b1bc208",
+    "tests/init.pp": "ac161a35edba9a4a723f279b397db7c9"
+  }
+}

@@ -1,0 +1,19 @@
+; DCPROMO unattended file
+[DCINSTALL]
+; New forest promotion
+ReplicaOrNewDomain=Domain
+NewDomain=Forest
+NewDomainDNSName=<%= @domain_name %>
+ForestLevel=3
+DomainNetbiosName=<%= @netbios_name %>
+DomainLevel=3
+InstallDNS=Yes
+ConfirmGc=Yes
+CreateDNSDelegation=No
+DatabasePath="C:\Windows\NTDS"
+LogPath="C:\Windows\NTDS"
+SYSVOLPath="C:\Windows\SYSVOL"
+; Set SafeModeAdminPassword to the correct value prior to using the unattend file
+SafeModeAdminPassword=<% @domain_password %>
+; Run-time flags (optional)
+; RebootOnCompletion=Yes
