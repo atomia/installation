@@ -41,6 +41,11 @@ class apache_agent (
 
     include nfsmount
 
+    exec { "/usr/sbin/a2enmod fcgid" :
+          unless => "/bin/readlink -e /etc/apache2/mods-enabled/fcgid.load",
+          notify => Service[apache2]
+    }
+
 	if $ssl_enabled != 0{
 		$ssl_generate_var = "ssl"
 
