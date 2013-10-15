@@ -25,9 +25,6 @@ class adjoin(
 	}
 	else {
 		package { libpam-ldap: ensure => present }
-		if $no_nscd != 1 {
-			package { nscd: ensure => present }
-		}
 
 		file { "/etc/pam.d/common-account":
 			ensure => file,
@@ -37,14 +34,18 @@ class adjoin(
 			source	=> "puppet:///modules/adjoin/common-account",
 		}
 
-		file { "/etc/nscd.conf":
-			ensure => file,
-			owner	=> root,
-			group	=> root,
-			mode	=> 644,
-			source	=> "puppet:///modules/adjoin/nscd.conf",
-			require => Package["nscd"],
-			notify => Service["nscd"],
+		if $no_nscd != 1 {
+			package { nscd: ensure => present }
+		
+			file { "/etc/nscd.conf":
+				ensure => file,
+				owner	=> root,
+				group	=> root,
+				mode	=> 644,
+				source	=> "puppet:///modules/adjoin/nscd.conf",
+				require => Package["nscd"],
+				notify => Service["nscd"],
+			}
 		}
 
 		service { nscd:
