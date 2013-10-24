@@ -1,0 +1,12 @@
+echo "Automation Server Encryption: "
+openssl x509 -in /etc/puppet/modules/atomia_windows_base/files/tools/certificates/automationencrypt.crt -fingerprint -noout | sed 's/SHA1 Fingerprint='// | sed s/\://g
+
+echo "Billing Encryption: "
+openssl x509 -in /etc/puppet/modules/atomia_windows_base/files/tools/certificates/billingencrypt.crt -fingerprint -noout | sed 's/SHA1 Fingerprint='// | sed s/\://g
+
+echo "Root cert: "
+openssl x509 -in /etc/puppet/modules/atomia_windows_base/files/tools/ca.crt -fingerprint -noout | sed 's/SHA1 Fingerprint='// | sed s/\://g
+
+
+echo "Signing: "
+openssl x509 -in /etc/puppet/modules/atomia_windows_base/files/tools/certificates/stssigning.crt -fingerprint -noout | sed 's/SHA1 Fingerprint='// | sed s/\://g
