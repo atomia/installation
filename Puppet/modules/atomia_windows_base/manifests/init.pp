@@ -159,5 +159,10 @@ class atomia_windows_base(
                 recurse => true
         }
 
+        file { 'C:\inetpub\wwwroot\empty.crl':
+                ensure => 'file',
+                source => "puppet:///modules/atomia_windows_base/tools/empty.crl"
+        }
+
 
 }
