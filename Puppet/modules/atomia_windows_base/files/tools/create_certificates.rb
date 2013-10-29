@@ -107,4 +107,5 @@ sign_certificate("automationencrypt",automationencrypt)
 sign_certificate("billingencrypt",billingencrypt)
 sign_certificate("guicert",guicert)
 
-openssl ca -config ca.cnf -gencrl -out empty.crl
+system("openssl ca -config ca.cnf -gencrl -out empty.crl")
+
