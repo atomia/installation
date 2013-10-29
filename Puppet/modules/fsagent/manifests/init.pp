@@ -7,7 +7,8 @@ class fsagent(
         $atomia_web_config_nfs_location,
         $apache_conf_dir,
         $atomia_iis_config_nfs_location,
-        $iis_config_dir
+        $iis_config_dir,
+	$no_nfs_config = 0
 	) {
 
 	package { python-software-properties: ensure => present }
@@ -30,16 +31,18 @@ class fsagent(
 	} else {
 		package { atomia-fsagent: ensure => present }
 	}
+	if !$no_nfs_config == '1'
+	{
+		include nfsmount
 
-	include nfsmount
-
-		file { "/storage/content/backup":
-			ensure => "directory",
+	}
+        file { "/storage/content/backup":
+            	ensure => "directory",
                 owner   => root,
                 group   => root,
                 mode    => 710,
-				require => mount["/storage/content"],
-		}
+       }
+
 
         $settings_content = generate("/etc/puppet/modules/fsagent/files/settings.cfg.sh", $fs_agent_user, $fs_agent_password)
         file { "/etc/default/fsagent":

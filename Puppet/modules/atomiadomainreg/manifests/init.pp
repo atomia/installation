@@ -7,7 +7,7 @@ class atomiadomainreg ($domainreg_service_url,$domainreg_service_username,$domai
 		package { atomiadomainregistration-client: ensure => present }
 	}
 
-	if $ssl_enabled {
+	if $ssl_enabled == '1' {
 		include apache_wildcard_ssl
         }
 
@@ -43,5 +43,12 @@ class atomiadomainreg ($domainreg_service_url,$domainreg_service_username,$domai
 		'apache_password_protect':
 		application_protect => "domainreg"
 	}
+
+	service { apache2:
+		name => apache2,
+		enable => true,
+		ensure => running,
+	}
+
 }
 
