@@ -25,7 +25,7 @@ class atomiadns (
 	}
 
 
-	if $ssl_enabled {
+	if $ssl_enabled == '1' {
 		include apache_wildcard_ssl
     	}
 
