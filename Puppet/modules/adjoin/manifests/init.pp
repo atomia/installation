@@ -6,7 +6,8 @@ class adjoin(
 		$base_dn = $adjoin::params::base_dn, 
 		$ldap_uris = $adjoin::params::ldap_uris,  
 		$bind_user = $adjoin::params::bind_user, 
-		$bind_password = $adjoin::params::bind_password
+		$bind_password = $adjoin::params::bind_password,
+		$no_nscd = $adjoin::params::no_nscd
 	) inherits adjoin::params {
 
 	if $operatingsystem == 'windows' {
@@ -24,7 +25,6 @@ class adjoin(
 	}
 	else {
 		package { libpam-ldap: ensure => present }
-		package { nscd: ensure => present }
 
 		file { "/etc/pam.d/common-account":
 			ensure => file,
@@ -34,14 +34,18 @@ class adjoin(
 			source	=> "puppet:///modules/adjoin/common-account",
 		}
 
-		file { "/etc/nscd.conf":
-			ensure => file,
-			owner	=> root,
-			group	=> root,
-			mode	=> 644,
-			source	=> "puppet:///modules/adjoin/nscd.conf",
-			require => Package["nscd"],
-			notify => Service["nscd"],
+		if $no_nscd != 1 {
+			package { nscd: ensure => present }
+		
+			file { "/etc/nscd.conf":
+				ensure => file,
+				owner	=> root,
+				group	=> root,
+				mode	=> 644,
+				source	=> "puppet:///modules/adjoin/nscd.conf",
+				require => Package["nscd"],
+				notify => Service["nscd"],
+			}
 		}
 
 		service { nscd:

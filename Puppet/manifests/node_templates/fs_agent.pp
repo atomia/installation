@@ -4,7 +4,8 @@ node 'atomia.com' inherits 'linux_base' {
 		base_dn => $base_dn, 
 		ldap_uris => $ldap_uris, 
 		bind_user => $bind_user, 
-		bind_password => $bind_password
+		bind_password => $bind_password,
+		no_nscd => 1
 	} 
 
 	class { 'fsagent' :

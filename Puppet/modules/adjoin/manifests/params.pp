@@ -8,5 +8,6 @@ class adjoin::params {
 	$ldap_uris = 'http://atomia.com'
 	$bind_user = 'PosixUser'
 	$bind_password = 'PosixPassword'
+	$no_nscd = 0
 
 }
