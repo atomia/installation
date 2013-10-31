@@ -31,7 +31,7 @@ class fsagent(
 	} else {
 		package { atomia-fsagent: ensure => present }
 	}
-	if !$no_nfs_config == '1'
+	if $no_nfs_config == '0'
 	{
 		include nfsmount
 
