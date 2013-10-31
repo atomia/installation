@@ -20,7 +20,7 @@ class cronagent (
 	}
 	
 	package { "postfix" :
-		require => present,
+		ensure => present,
 	}
 
 	
