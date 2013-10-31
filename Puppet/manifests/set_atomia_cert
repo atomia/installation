@@ -1,0 +1,6 @@
+#!/bin/sh
+cp /etc/puppet/manifests/variables.pp /etc/puppet/manifests/variables.pp.preupdate
+sed -i -e 's,^\(\$atomia_public_key = "\).*$,\1'"$(cat /root/.ssh/id_rsa.pub)\"," /etc/puppet/manifests/variables.pp
+echo "Updated variables.pp according to the following diff:"
+diff -u /etc/puppet/manifests/variables.pp.preupdate /etc/puppet/manifests/variables.pp
+rm -f /etc/puppet/manifests/variables.pp.preupdate
