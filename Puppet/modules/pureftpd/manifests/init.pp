@@ -87,7 +87,7 @@ class pureftpd (
                         config_hash => { 'server_id' => '2', 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => 'pureftpd'}
                 }
                 exec { 'change-master':
-                        command => "$mysql_command -e \"CHANGE MASTER TO MASTER_HOST='$pureftpd_master_ip',MASTER_USER='slave_user', MASTER_PASSWORD='$pureftpd_slave_password', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=285\" ;START SLAVE;",
+                        command => "$mysql_command -e \"CHANGE MASTER TO MASTER_HOST='$pureftpd_master_ip',MASTER_USER='slave_user', MASTER_PASSWORD='$pureftpd_slave_password', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=107\";START SLAVE;",
                         unless => "$mysql_command -e \"SHOW SLAVE STATUS\" | grep slave_user",
                 }
 	}
