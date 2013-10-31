@@ -35,6 +35,10 @@ class webinstaller (
                 'apache_password_protect':
                 application_protect => "webinstaller"
         }
+	service { 'apache': 
+		name => apache2,
+		ensure => running
+	}
 
 	include nfsmount
 }
