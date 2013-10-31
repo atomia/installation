@@ -47,7 +47,6 @@ $hcp = "hcp"
 $automationserver = "automationserver"
 
 # Thumbprints for the encrypton certificates
-# TODO: Document how to obtain these or automate
 $automationserver_encryption_cert_thumb = ""
 $billing_encryption_cert_thumb = ""
 $root_cert_thumb = ""
