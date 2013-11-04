@@ -127,12 +127,18 @@ $apache_conf_dir = "apache"
 $iis_config_dir = "iis"
 
 # Customer Mysql servers
-$number_of_mysql_servers = 5
-$mysql_ip_address = ["127.0.0.1", "127.0.0.1"]
+$number_of_mysql_servers = 1
+$mysql_ip_address = ["127.0.0.1"]
 $mysql_username = "atomiaprov" #Max 16 characters
 $mysql_password = "#RANDOM_STRING"
 # Ip of server running automation server
 $provisioning_host = ""
+
+# Customer MSsql servers
+$number_of_mssql_servers = 1
+$mssql_ip_address = ["127.0.0.1"]
+$mssql_username = "atomiaprov" #Max 16 characters
+$mssql_password = "#RANDOM_STRING"
 
 #Daggre 
 $daggre_global_auth_token = "#RANDOM_STRING"

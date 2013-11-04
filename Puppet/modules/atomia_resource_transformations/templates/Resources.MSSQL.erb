@@ -1,14 +1,19 @@
+<% $i = 0 %>
 <resourceDescription xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
   <bindings xdt:Locator="XPath(//bindings[moduleList/module/@name='Atomia.Provisioning.Modules.MSSQL.MSSQL'])">
     <resourceList>
-      <resource name="MSSQL1" xdt:Transform="Insert">
-        <property name="DatabaseServer">217.170.198.42</property>
-        <property name="PublicIpAddress">217.170.198.42</property>
-        <property name="User">atomia-agent</property>
-        <property name="Password">M2RJW2ydsYyZMzsf</property>
+<% while $i <= @number_of_mssql_servers.to_i do %>
+      <resource name="MSSQL<%= $i %>" xdt:Transform="Insert">
+        <property name="DatabaseServer"><%= @mssql_ip_address[$i] %></property>
+        <property name="PublicIpAddress"><%= @mssql_ip_address[$i] %></property>
+        <property name="User"><%= @mssql_username %></property>
+        <property name="Password"><%= @mssql_password %></property>
         <property name="InitialCatalog">master</property>
-        <property name="AdminIpAddress">217.170.198.42</property>      
+        <property name="AdminIpAddress"><%= @mssql_ip_address[$i] %></property>      
       </resource>
+<% $i = $i + 1 %>
+<% end %>
     </resourceList>
   </bindings>
 </resourceDescription>
+
