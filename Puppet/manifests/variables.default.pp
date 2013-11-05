@@ -181,6 +181,7 @@ $atomia_mail_cluster_ip = ""
 
 # IIS 
 $iis_master_ip = ""
+$iis_cluster_ip = ""
 
 # HAPROXY
 $atomia_pa_haproxy_user = "atomia-agent"
