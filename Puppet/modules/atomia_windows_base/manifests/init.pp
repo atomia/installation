@@ -53,16 +53,24 @@ class atomia_windows_base(
 			ensure => present
 	        }
 
-        	dism { MSMQ-Services:
+	        dism { 'IIS-NetFxExtensibility45':
+			ensure => present
+	        }
+
+	        dism { 'IIS-ASPNET45':
+			ensure => present
+	        }
+
+        	dism { 'MSMQ-Services':
 			ensure => present
 		}
 
-        	dism { MSMQ:
+        	dism { 'MSMQ':
 			ensure => present
 		}
 	}
 
-        dism { MSMQ-Server:
+        dism { 'MSMQ-Server':
                 ensure => present
         }
 
