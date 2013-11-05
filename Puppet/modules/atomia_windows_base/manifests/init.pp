@@ -68,6 +68,10 @@ class atomia_windows_base(
         	dism { 'MSMQ':
 			ensure => present
 		}
+
+        	dism { 'windows-identity-foundation':
+			ensure => present
+		}
 	}
 
         dism { 'MSMQ-Server':
