@@ -72,6 +72,11 @@ class atomia_windows_base(
         	dism { 'windows-identity-foundation':
 			ensure => present
 		}
+
+        	dism { 'WCF-HTTP-Activation':
+			ensure => present,
+			all => true
+		}
 	}
 
         dism { 'MSMQ-Server':
