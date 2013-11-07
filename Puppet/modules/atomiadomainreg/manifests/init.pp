@@ -39,7 +39,7 @@ class atomiadomainreg ($domainreg_service_url,$domainreg_service_username,$domai
 		}
 	}
 
-	if defined(Class['apache_password_protect']) {
+	if !defined(Class['apache_password_protect']) {
 		class {
 			'apache_password_protect':
 				application_protect => "domainreg"

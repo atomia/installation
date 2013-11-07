@@ -29,7 +29,7 @@ class atomiadns (
 		include apache_wildcard_ssl
     	}
 
-	if defined(Class['apache_password_protect']) {
+	if !defined(Class['apache_password_protect']) {
 	        class { 'apache_password_protect':
                 	application_protect => "atomiadns"
 		}
