@@ -77,6 +77,11 @@ class atomia_windows_base(
 			ensure => present,
 			all => true
 		}
+
+        	dism { 'WCF-HTTP-Activation45':
+			ensure => present,
+			all => true
+		}
 	}
 
         dism { 'MSMQ-Server':

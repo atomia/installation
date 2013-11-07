@@ -56,7 +56,7 @@ class postfix_mx (
 	if $atomia_mail_db_is_master == 1{
 
                 class { 'mysql::server':
-                        config_hash => { 'server_id' => "$mail_server_id", 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => "$db_name", 'bind_address' => $atomia_mail_master_ip}
+                        override_options => { 'server_id' => "$mail_server_id", 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => "$db_name", 'bind_address' => $atomia_mail_master_ip}
                 }
 
                 exec { 'grant-replicate-privileges':

@@ -29,10 +29,11 @@ class atomiadns (
 		include apache_wildcard_ssl
     	}
 
-        class {
-                'apache_password_protect':
-                application_protect => "atomiadns"
-        }
+	if defined(Class['apache_password_protect']) {
+	        class { 'apache_password_protect':
+                	application_protect => "atomiadns"
+		}
+	}
 
 	if $atomia_dns_ns_group {
 		exec 
