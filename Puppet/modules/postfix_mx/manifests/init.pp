@@ -5,7 +5,8 @@ class postfix_mx (
 		$atomia_mail_master_ip,
 		$atomia_mail_agent_password,
 		$mail_slave_password,
-		$mail_server_id
+		$mail_server_id,
+		$no_nfs_config = 0
 	){
 	package { postfix-mysql: ensure => installed }
 	package { dovecot-common: ensure => installed }
@@ -40,8 +41,10 @@ class postfix_mx (
 	package { unzip: ensure => installed } 
 	package { zip: ensure => installed } 
 	package { zoo: ensure => installed } 
-	
-	include mailnfsmount
+
+	if $no_nfs_config == 0 {
+		include mailnfsmount
+	}
 
 	$db_hosts = $ipaddress 
 	$db_user = "vmail"
