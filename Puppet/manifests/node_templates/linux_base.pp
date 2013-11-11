@@ -17,10 +17,4 @@ node 'linux_base' {
 	package { "curl" :
 		ensure => latest
 	}
-
-        exec { "apt-update":
-                command => "/usr/bin/apt-get update"
-        }
-
-        Exec["apt-update"] -> Package <| |>
 }

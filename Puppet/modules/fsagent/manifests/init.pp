@@ -23,7 +23,10 @@ class fsagent(
       		subscribe => File["/etc/apt/sources.list"],
    	}
 	
-	package { nodejs: ensure => present }
+	package { nodejs:
+		ensure => present,
+		require => Apt::Ppa['ppa:chris-lea/node.js']
+	}
 
 	if $atomia_linux_software_auto_update {
 		package { atomia-fsagent: ensure => latest }

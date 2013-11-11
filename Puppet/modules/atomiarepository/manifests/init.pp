@@ -3,7 +3,7 @@ class atomiarepository {
 		owner   => root,
 		group   => root,
 		mode    => 440,
-		content => "deb http://apt.atomia.com/ubuntu-$lsbdistcodename $lsbdistcodename main"
+		content => "deb http://apt.atomia.com/ubuntu-$lsbdistcodename $lsbdistcodename main",
 	}
 
 	file { "/etc/apt/ATOMIA-GPG-KEY.pub":
@@ -24,6 +24,13 @@ class atomiarepository {
 		owner   => root,
 		group   => root,
 		mode    => 440,
-		source  => "puppet:///modules/atomiarepository/80atomiaupdate"
+		source  => "puppet:///modules/atomiarepository/80atomiaupdate",
 	}
+
+        exec { "apt-update":
+                command => "/usr/bin/apt-get update",
+		require => File["/etc/apt/apt.conf.d/80atomiaupdate", "/etc/apt/ATOMIA-GPG-KEY.pub", "/etc/apt/sources.list.d/atomia.list"]
+        }
+
+        Exec["apt-update"] -> Package <| |>
 }

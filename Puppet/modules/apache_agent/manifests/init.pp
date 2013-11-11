@@ -220,6 +220,8 @@ class apache_agent (
                 name => apache-agent,
                 enable => true,
                 ensure => running,
+		hasstatus => false,
+		pattern => "python /etc/init.d/apache-agent start",
                 subscribe => [ Package["atomia-pa-apache"], File["/usr/local/apache-agent/settings.cfg"] ],
         }
 
