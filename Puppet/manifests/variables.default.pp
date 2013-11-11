@@ -24,8 +24,8 @@ $ldap_uris = "ldap://ad1.xxx.com ldap://ad2.xxx.com"
 $bind_user = "PosixGuest"
 $bind_password = "#RANDOM_STRING"
 
-$windows_guest_user = "WindowsGuest"
-$windows_guest_password = "#RANDOM_STRING"
+$windows_admin_user = "WindowsGuest"
+$windows_admin_password = "#RANDOM_STRING"
 
 # Ip address of the main domain controller
 $dc_ip = "" 
