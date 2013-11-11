@@ -18,11 +18,6 @@ class fsagent(
 	class { 'apt': }
 	apt::ppa { 'ppa:chris-lea/node.js': }
 
-   	exec { "/usr/bin/apt-get update":
-      		alias => "aptgetupdate",
-      		subscribe => File["/etc/apt/sources.list"],
-   	}
-	
 	package { nodejs:
 		ensure => present,
 		require => Apt::Ppa['ppa:chris-lea/node.js']
@@ -81,6 +76,8 @@ class fsagent(
                 name => atomia-fsagent,
                 enable => true,
                 ensure => running,
+		hasstatus => false,
+		pattern => "/usr/bin/nodejs /usr/lib/atomia-fsagent/main.js",
                 subscribe => [ Package["atomia-fsagent"], File["/etc/default/fsagent"] ],
         }
 		
