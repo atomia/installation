@@ -39,7 +39,7 @@ class apache_agent (
 	package { php5-curl: ensure => installed }
 	package { php5-pgsql: ensure => installed }
 
-    include nfsmount
+	include nfsmount
 
 	if $ssl_enabled != 0{
 		$ssl_generate_var = "ssl"
@@ -102,14 +102,20 @@ class apache_agent (
 	file { "/var/www/cgi-wrappers":
 		mode	=> 755,
 	}
-	
+
+	if $atomia_web_content_nfs_location {
+		$mountRequirement = [ "/storage/configuration" ]
+	} else {
+		$mountRequirement = []
+	}
+
 	# ensuring we have maps folder and needed files inside
 	file { "/storage/configuration/maps":
 			owner   => root,
 			group   => www-data,
 			mode    => 2750,
 			ensure  => directory,
-			require => Mount["/storage/configuration"],
+			require => Mount[$mountRequirement]
 	}
 	
 	file { "/storage/configuration/maps/frmrs.map":

@@ -8,7 +8,6 @@ class fsagent(
         $apache_conf_dir,
         $atomia_iis_config_nfs_location,
         $iis_config_dir,
-	$no_nfs_config = 0
 	) {
 
 	package { python-software-properties: ensure => present }
@@ -31,11 +30,9 @@ class fsagent(
 	} else {
 		package { atomia-fsagent: ensure => present }
 	}
-	if $no_nfs_config == '0'
-	{
-		include nfsmount
 
-	}
+	include nfsmount
+
         file { "/storage/content/backup":
             	ensure => "directory",
                 owner   => root,
