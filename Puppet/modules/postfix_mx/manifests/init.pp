@@ -54,17 +54,15 @@ class postfix_mx (
 	$db_pass = $atomia_mail_agent_password
 
 	$mysql_command = "/usr/bin/mysql --defaults-file=/etc/mysql/debian.cnf -Ns"
-	class mysql {}
 
 	if $atomia_mail_db_is_master == 1{
-
                 class { 'mysql::server':
-                        override_options => { 'server_id' => "$mail_server_id", 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => "$db_name", 'bind_address' => $atomia_mail_master_ip}
+                        override_options  => { 'server_id' => "$mail_server_id", 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => "$db_name", 'bind_address' => $atomia_mail_master_ip}
                 }
 
                 exec { 'grant-replicate-privileges':
                         command => "$mysql_command -e \"GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY '$mail_slave_password';FLUSH PRIVILEGES\";",
-                        unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = 'slave_user'\" /usr/bin/mysql | /bin/grep slave_user",
+                        unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = 'slave_user'\" mysql | /bin/grep slave_user",
                 }
 
                 exec { 'create-postfix-db':
@@ -86,18 +84,18 @@ class postfix_mx (
 
                 exec { 'grant-postfix-provisioning-user-privileges':
                 command => "$mysql_command -e \"GRANT ALL ON $db_name.* TO 'postfix_agent'@'$provisioning_host' IDENTIFIED BY '$db_pass'\"",
-                unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = 'postfix_agent' AND host = '$provisioning_host'\" /usr/bin/mysql | /bin/grep postfix_agent",
+                unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = 'postfix_agent' AND host = '$provisioning_host'\" mysql | /bin/grep postfix_agent",
         }
 
 
                 exec { 'grant-postfix-smtp-db-user-privileges':
                 command => "$mysql_command -e \"GRANT ALL ON $db_name.* TO '$db_user_smtp'@'%' IDENTIFIED BY '$db_pass'\"",
-                unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$db_user_smtp' AND host = '%'\" /usr/bin/mysql | /bin/grep $db_user_smtp",
+                unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$db_user_smtp' AND host = '%'\" mysql | /bin/grep $db_user_smtp",
         }
 
                 exec { 'grant-postfix-dovecpt-db-user-privileges':
                 command => "$mysql_command -e \"GRANT ALL ON $db_name.* TO '$db_user_dovecot'@'%' IDENTIFIED BY '$db_pass'\"",
-                unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$db_user_dovecot' AND host = '%'\" /usr/bin/mysql | /bin/grep $db_user_dovecot",
+                unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$db_user_dovecot' AND host = '%'\" mysql| /bin/grep $db_user_dovecot",
         }
 
 
