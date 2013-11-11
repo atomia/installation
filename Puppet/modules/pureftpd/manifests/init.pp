@@ -21,20 +21,12 @@ class pureftpd (
 
 	include nfsmount
 
-#       	class { 'atomia_mysql':
-#        	      mysql_username => $pureftpd_agent_user,
-#                      mysql_password => $pureftpd_agent_password,
-#                      provisioning_host => $provisioning_host,
-#                }
-
 	$mysql_command = "/usr/bin/mysql --defaults-file=/etc/mysql/debian.cnf -Ns"
-        class { 'mysql':
-        }
 	
 	if $atomia_pureftp_db_is_master == 1{
 
 		class { 'mysql::server':
-			config_hash => { 'server_id' => '1', 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => 'pureftpd', 'bind_address' => $pureftpd_master_ip}
+			override_options  => { mysqld => {'server_id' => '1', 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => 'pureftpd', 'bind_address' => $pureftpd_master_ip } }
 		}
 
 		exec { 'grant-replicate-privileges':
@@ -54,24 +46,9 @@ class pureftpd (
 		}
 	
 		exec { 'grant-pureftpd-agent-privileges':
-		command => "$mysql_command -e \"GRANT ALL ON pureftpd.* TO '$pureftpd_agent_user'@'%' IDENTIFIED BY '$pureftpd_agent_password'\"",
-		unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$pureftpd_agent_user' AND host = '%'\" mysql | grep $pureftpd_agent_user",
-	}	
-
-#		mysql::db { 'pureftpd':
-#  			user     => $pureftpd_db_user,
-#  			password => $pureftpd_db_password,
-#  			host     => $provisioning_host,
-#  			grant    => ['all'],
-#  			sql 	 => '/etc/pure-ftpd/mysql.schema.sql',
-#  			require  => [ File["/etc/pure-ftpd/mysql.schema.sql"], Package["mysql-server"] ],
-#		}
-
-	
-#		exec { 'create-pureftpd-user':
-#			command => "$mysql_command -e \"GRANT ALL ON pureftpd.* TO 'pureftpd'@'%' IDENTIFIED BY '$pureftpd_password'\"",
-#			unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = 'pureftpd' AND host = '%'\" mysql | grep pureftpd",
-#		}
+			command => "$mysql_command -e \"GRANT ALL ON pureftpd.* TO '$pureftpd_agent_user'@'%' IDENTIFIED BY '$pureftpd_agent_password'\"",
+			unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$pureftpd_agent_user' AND host = '%'\" mysql | grep $pureftpd_agent_user",
+		}	
 
 		file { "/etc/pure-ftpd/mysql.schema.sql":
 			owner   => root,

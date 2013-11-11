@@ -56,8 +56,8 @@ class postfix_mx (
 	$mysql_command = "/usr/bin/mysql --defaults-file=/etc/mysql/debian.cnf -Ns"
 
 	if $atomia_mail_db_is_master == 1{
-                class { 'mysql::server':
-                        override_options  => { 'server_id' => "$mail_server_id", 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => "$db_name", 'bind_address' => $atomia_mail_master_ip}
+                class { '::mysql::server':
+                        override_options  => { 'mysqld' => {'server_id' => "$mail_server_id", 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => "$db_name", 'bind_address' => $atomia_mail_master_ip}}
                 }
 
                 exec { 'grant-replicate-privileges':
