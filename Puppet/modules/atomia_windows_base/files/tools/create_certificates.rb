@@ -93,6 +93,7 @@ end
 sign_certificate(actiontrail,actiontrail)
 sign_certificate(login,login)
 sign_certificate(order,order)
+sign_certificate(billing,billing)
 sign_certificate(admin,admin)
 sign_certificate(hcp,hcp)
 sign_certificate(automationserver,automationserver)
