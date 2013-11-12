@@ -23,7 +23,7 @@ class pureftpd (
 
 	$mysql_command = "/usr/bin/mysql --defaults-file=/etc/mysql/debian.cnf -Ns"
 	
-	if $atomia_pureftp_db_is_master == 1{
+	if $atomia_pureftp_db_is_master == 1 {
 
 		class { 'mysql::server':
 			override_options  => { mysqld => {'server_id' => '1', 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => 'pureftpd', 'bind_address' => $pureftpd_master_ip } }
@@ -32,22 +32,27 @@ class pureftpd (
 		exec { 'grant-replicate-privileges':
 			command => "$mysql_command -e \"GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY '$pureftpd_slave_password'\";FLUSH PRIVILEGES;",
 			unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = 'slave_user'\" mysql | grep slave_user",
+			require => Class[Mysql::Server::Service]
 		}
 		
 		exec { 'create-pureftpd-db': 
 			command => "$mysql_command -e \"CREATE DATABASE pureftpd\"",
-			onlyif => "$mysql_command -e \"SHOW SLAVE HOSTS;\" | grep 1",
 			unless => "$mysql_command -e \"SHOW DATABASES;\" | grep pureftpd",
+			require => Class[Mysql::Server::Service]
 		}
 
 		exec { 'import-schema':
 			command => "$mysql_command pureftpd < /etc/pure-ftpd/mysql.schema.sql",
 			unless => "$mysql_command -e \"use pureftpd; show tables;\" | grep users",
+			onlyif => "$mysql_command -e \"SHOW DATABASES;\" | grep pureftpd",
+			require => Class[Mysql::Server::Service]
 		}
 	
 		exec { 'grant-pureftpd-agent-privileges':
 			command => "$mysql_command -e \"GRANT ALL ON pureftpd.* TO '$pureftpd_agent_user'@'%' IDENTIFIED BY '$pureftpd_agent_password'\"",
 			unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$pureftpd_agent_user' AND host = '%'\" mysql | grep $pureftpd_agent_user",
+			onlyif => "$mysql_command -e \"SHOW DATABASES;\" | grep pureftpd",
+			require => Class[Mysql::Server::Service]
 		}	
 
 		file { "/etc/pure-ftpd/mysql.schema.sql":
@@ -61,16 +66,20 @@ class pureftpd (
 	else {
 		# Slave config
                 class { 'mysql::server':
-                        config_hash => { 'server_id' => '2', 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => 'pureftpd'}
+                        override_options => { 'server_id' => '2', 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => 'pureftpd'}
                 }
+
                 exec { 'change-master':
                         command => "$mysql_command -e \"CHANGE MASTER TO MASTER_HOST='$pureftpd_master_ip',MASTER_USER='slave_user', MASTER_PASSWORD='$pureftpd_slave_password', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=107\";START SLAVE;",
                         unless => "$mysql_command -e \"SHOW SLAVE STATUS\" | grep slave_user",
+			require => Class[Mysql::Server::Service]
                 }
 	}
-                exec { 'grant-pureftpd-privileges':
+
+	exec { 'grant-pureftpd-privileges':
                 command => "$mysql_command -e \"GRANT ALL ON pureftpd.* TO 'pureftpd'@'127.0.0.1' IDENTIFIED BY '$pureftpd_password'\"",
                 unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = 'pureftpd' AND host = '127.0.0.1'\" mysql | grep pureftpd",
+		require => Class[Mysql::Server::Service]
         }
 
 	$mysql_conf = generate("/etc/puppet/modules/pureftpd/files/generate_mysql.sh", $pureftpd_master_ip, 'pureftpd', 'pureftpd', $pureftpd_password)
@@ -128,7 +137,7 @@ class pureftpd (
                 notify  => Service["pure-ftpd-mysql"],
         }
 		
-		file { "/etc/pure-ftpd/conf/PassivePortRange":
+	file { "/etc/pure-ftpd/conf/PassivePortRange":
                 owner   => root,
                 group   => root,
                 mode    => 444,
@@ -145,6 +154,7 @@ class pureftpd (
                 require => Package["pure-ftpd-mysql"],
                 notify  => Service["pure-ftpd-mysql"],
 	}
+
         file { "/etc/pure-ftpd/conf/ForcePassiveIP":
                 owner    => root,
                 group    => root,
@@ -153,8 +163,6 @@ class pureftpd (
                 require => Package["pure-ftpd-mysql"],
                 notify  => Service["pure-ftpd-mysql"],
         }               
-
-
 
         service { pure-ftpd-mysql:
                 name => pure-ftpd-mysql,
@@ -196,4 +204,3 @@ class pureftpd (
 		}
 	}
 }
-
