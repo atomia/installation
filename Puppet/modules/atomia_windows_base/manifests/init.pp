@@ -49,7 +49,7 @@ class atomia_windows_base(
 
 	# 6.1 is 2008 R2, so this matches 2012 and forward
 	# see http://msdn.microsoft.com/en-us/library/windows/desktop/ms724832(v=vs.85).aspx
-	if versioncmp($kernelmajversion, "6.1") {
+	if versioncmp($kernelmajversion, "6.1") > 0 {
 	        dism { 'NetFx4Extended-ASPNET45':
 			ensure => present
 	        }
@@ -169,13 +169,13 @@ class atomia_windows_base(
         }
 
         file { "unattended.ini":
-                path    => "C:\Program Files (x86)\Atomia\Common\unattended.ini",
+                path    => 'C:\Program Files (x86)\Atomia\Common\unattended.ini',
                 ensure => file,
                 content => template('atomia_windows_base/ini_template.erb'),
         }
 
-        file { "C:\Program Files (x86)\Atomia\Common\atomia.ini.location":
-                content => "C:\Program Files (x86)\Atomia\Common",
+        file { 'C:\Program Files (x86)\Atomia\Common\atomia.ini.location':
+                content => 'C:\Program Files (x86)\Atomia\Common',
         }
 
         file { 'C:\ProgramData\Atomia Installer\appupdater.ini' :
