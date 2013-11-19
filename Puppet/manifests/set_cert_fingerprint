@@ -1,0 +1,21 @@
+#!/bin/sh
+
+dir="/etc/puppet/manifests"
+
+cp "$dir"/variables.pp "$dir"/variables.pp.precertimport
+
+thumb=`$dir/get_cert_fingerprint | grep -A 1 "Automation Server Encryption:" | tail -n 1`
+sed -i -e 's,^\(\$automationserver_encryption_cert_thumb = "\).*$,\1'"$thumb\"," "$dir"/variables.pp
+
+thumb=`$dir/get_cert_fingerprint | grep -A 1 "Billing Encryption:" | tail -n 1`
+sed -i -e 's,^\(\$billing_encryption_cert_thumb = "\).*$,\1'"$thumb\"," "$dir"/variables.pp
+
+thumb=`$dir/get_cert_fingerprint | grep -A 1 "Root cert:" | tail -n 1`
+sed -i -e 's,^\(\$root_cert_thumb = "\).*$,\1'"$thumb\"," "$dir"/variables.pp
+
+thumb=`$dir/get_cert_fingerprint | grep -A 1 "Signing:" | tail -n 1`
+sed -i -e 's,^\(\$signing_cert_thumb = "\).*$,\1'"$thumb\"," "$dir"/variables.pp
+
+echo "Imported certificate thumbprints according to following diff:"
+diff -u "$dir"/variables.pp.precertimport "$dir"/variables.pp
+rm -f "$dir"/variables.pp.precertimport

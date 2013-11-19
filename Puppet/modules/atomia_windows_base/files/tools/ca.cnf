@@ -48,7 +48,7 @@ private_key            = $dir/private/ca.key
 RANDFILE               = $dir/.rand
 x509_extensions        = usr_cert
 default_days           = 3650
-default_crl_days       = 30
+default_crl_days       = 10000
 # IMPORTANT: The next must no longer be md5, if used with
 # Debian's OpenLDAP package being compiled against libgnutls.
 default_md             = sha1

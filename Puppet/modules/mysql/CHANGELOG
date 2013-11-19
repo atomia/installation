@@ -1,3 +1,117 @@
+2013-10-21 - Version 2.0.1
+
+Summary:
+
+This is a bugfix release to handle an issue where unsorted mysql_grant{}
+privileges could cause Puppet to incorrectly reapply the permissions on
+each run.
+
+Fixes:
+- Mysql_grant now sorts privileges in the type and provider for comparision.
+- Comment and test tweak for PE3.1.
+
+2013-10-14 - Version 2.0.0
+
+Summary:
+
+(Previously detailed in the changelog for 2.0.0-rc1)
+
+This module has been completely refactored and works significantly different.
+The changes are broad and touch almost every piece of the module.
+
+See the README.md for full details of all changes and syntax.
+Please remain on 1.0.0 if you don't have time to fully test this in dev.
+
+* mysql::server, mysql::client, and mysql::bindings are the primary interface
+classes.
+* mysql::server takes an `options_override` parameter to set my.cnf options,
+with the hash format: { 'section' => { 'thing' => 'value' }}
+* mysql attempts backwards compatibility by forwarding all parameters to
+mysql::server.
+
+2013-10-09 - Version 2.0.0-rc5
+
+Summary:
+
+Hopefully the final rc!  Further fixes to mysql_grant (stripping out the
+cleverness so we match a much wider range of input.)
+
+Fixes:
+- Make mysql_grant accept '.*'@'.*' in terms of input for user@host.
+
+2013-10-09 - Version 2.0.0-rc4
+
+Summary:
+
+Bugfixes to mysql_grant and mysql_user form the bulk of this rc, as well as
+ensuring that values in the override_options hash that contain a value of ''
+are created as just "key" in the conf rather than "key =" or "key = false".
+
+Fixes:
+- Improve mysql_grant to work with IPv6 addresses (both long and short).
+- Ensure @host users work as well as user@host users.
+- Updated my.cnf template to support items with no values.
+
+2013-10-07 - Version 2.0.0-rc3
+
+Summary:
+
+Fix mysql::server::monitor's use of mysql_user{}.
+
+Fixes:
+- Fix myql::server::monitor's use of mysql_user{} to grant the proper
+permissions.  Add specs as well.  (Thanks to treydock!)
+
+2013-10-03 - Version 2.0.0-rc2
+
+Summary:
+
+Bugfixes
+
+Fixes:
+- Fix a duplicate parameter in mysql::server
+
+2013-10-03 - Version 2.0.0-rc1
+
+Summary:
+
+This module has been completely refactored and works significantly different.
+The changes are broad and touch almost every piece of the module.
+
+See the README.md for full details of all changes and syntax.
+Please remain on 1.0.0 if you don't have time to fully test this in dev.
+
+* mysql::server, mysql::client, and mysql::bindings are the primary interface
+classes.
+* mysql::server takes an `options_override` parameter to set my.cnf options,
+with the hash format: { 'section' => { 'thing' => 'value' }}
+* mysql attempts backwards compatibility by forwarding all parameters to
+mysql::server.
+
+2013-09-23 - Version 1.0.0
+
+Summary:
+
+This release introduces a number of new type/providers, to eventually
+replace the database_ ones.  The module has been converted to call the
+new providers rather than the previous ones as they have a number of
+fixes, additional options, and work with puppet resource.
+
+This 1.0.0 release precedes a large refactoring that will be released
+almost immediately after as 2.0.0.
+
+Features:
+- Added mysql_grant, mysql_database, and mysql_user.
+- Add `mysql::bindings` class and refactor all other bindings to be contained underneath mysql::bindings:: namespace.
+- Added support to back up specified databases only with 'mysqlbackup' parameter.
+- Add option to mysql::backup to set the backup script to perform a mysqldump on each database to its own file
+
+Bugfixes:
+- Update my.cnf.pass.erb to allow custom socket support
+- Add environment variable for .my.cnf in mysql::db.
+- Add HOME environment variable for .my.cnf to mysqladmin command when
+(re)setting root password
+
 2013-07-15 - Version 0.9.0
 Features:
 - Add `mysql::backup::backuprotate` parameter

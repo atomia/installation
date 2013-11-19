@@ -12,6 +12,7 @@ node 'windows_base' {
         	app_password                                   => $app_password, 
         	ad_domain                                      => $ad_shortname, 
         	database_server                                => $database_server,
+		mirror_database_server			       => $mirror_database_server,
         	appdomain                                      => $appdomain,
         	actiontrail                                    => $actiontrail,
         	login                                          => $login,

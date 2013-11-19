@@ -5,7 +5,8 @@ class postfix_mx (
 		$atomia_mail_master_ip,
 		$atomia_mail_agent_password,
 		$mail_slave_password,
-		$mail_server_id
+		$mail_server_id,
+		$no_nfs_config = 0
 	){
 	package { postfix-mysql: ensure => installed }
 	package { dovecot-common: ensure => installed }
@@ -40,8 +41,10 @@ class postfix_mx (
 	package { unzip: ensure => installed } 
 	package { zip: ensure => installed } 
 	package { zoo: ensure => installed } 
-	
-	include mailnfsmount
+
+	if $no_nfs_config == 0 {
+		include mailnfsmount
+	}
 
 	$db_hosts = $ipaddress 
 	$db_user = "vmail"
@@ -51,62 +54,66 @@ class postfix_mx (
 	$db_pass = $atomia_mail_agent_password
 
 	$mysql_command = "/usr/bin/mysql --defaults-file=/etc/mysql/debian.cnf -Ns"
-	class mysql {}
 
 	if $atomia_mail_db_is_master == 1{
-
-                class { 'mysql::server':
-                        config_hash => { 'server_id' => "$mail_server_id", 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => "$db_name", 'bind_address' => $atomia_mail_master_ip}
+                class { '::mysql::server':
+                        override_options  => { 'mysqld' => {'server_id' => "$mail_server_id", 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => "$db_name", 'bind_address' => $atomia_mail_master_ip}}
                 }
 
                 exec { 'grant-replicate-privileges':
                         command => "$mysql_command -e \"GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY '$mail_slave_password';FLUSH PRIVILEGES\";",
-                        unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = 'slave_user'\" /usr/bin/mysql | /bin/grep slave_user",
+                        unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = 'slave_user'\" mysql | /bin/grep slave_user",
+			require => Class[Mysql::Server::Service]
                 }
 
                 exec { 'create-postfix-db':
                         command => "$mysql_command -e \"CREATE DATABASE $db_name\"",
-                        onlyif => "$mysql_command -e \"SHOW SLAVE HOSTS;\" | grep 1",
                         unless => "$mysql_command -e \"SHOW DATABASES;\" | /bin/grep $db_name",
+			require => Class[Mysql::Server::Service]
                 }
 
                 exec { 'import-schema':
                         command => "$mysql_command $db_name < /etc/postfix/mysql.schema.sql",
-			onlyif => "$mysql_command -e \"SHOW SLAVE HOSTS;\" | grep 1",
                         unless => "$mysql_command -e \"use $db_name; show tables;\" | /bin/grep user",
+			require => Class[Mysql::Server::Service]
                 }
 
                 exec { 'grant-postfix-db-user-privileges':
-                command => "$mysql_command -e \"CREATE USER '$db_user'@'%' IDENTIFIED BY '$db_pass';GRANT ALL PRIVILEGES ON $db_name.* TO '$db_user'@'%'\"",
-                unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$db_user' \" mysql | /bin/grep $db_user",
-        }
+			command => "$mysql_command -e \"CREATE USER '$db_user'@'%' IDENTIFIED BY '$db_pass';GRANT ALL PRIVILEGES ON $db_name.* TO '$db_user'@'%'\"",
+			unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$db_user' \" mysql | /bin/grep $db_user",
+			require => Class[Mysql::Server::Service]
+		}
 
                 exec { 'grant-postfix-provisioning-user-privileges':
-                command => "$mysql_command -e \"GRANT ALL ON $db_name.* TO 'postfix_agent'@'$provisioning_host' IDENTIFIED BY '$db_pass'\"",
-                unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = 'postfix_agent' AND host = '$provisioning_host'\" /usr/bin/mysql | /bin/grep postfix_agent",
-        }
+			command => "$mysql_command -e \"GRANT ALL ON $db_name.* TO 'postfix_agent'@'$provisioning_host' IDENTIFIED BY '$db_pass'\"",
+			unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = 'postfix_agent' AND host = '$provisioning_host'\" mysql | /bin/grep postfix_agent",
+			require => Class[Mysql::Server::Service]
+		}
 
 
                 exec { 'grant-postfix-smtp-db-user-privileges':
-                command => "$mysql_command -e \"GRANT ALL ON $db_name.* TO '$db_user_smtp'@'%' IDENTIFIED BY '$db_pass'\"",
-                unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$db_user_smtp' AND host = '%'\" /usr/bin/mysql | /bin/grep $db_user_smtp",
-        }
+			command => "$mysql_command -e \"GRANT ALL ON $db_name.* TO '$db_user_smtp'@'%' IDENTIFIED BY '$db_pass'\"",
+			unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$db_user_smtp' AND host = '%'\" mysql | /bin/grep $db_user_smtp",
+			require => Class[Mysql::Server::Service]
+		}
 
                 exec { 'grant-postfix-dovecpt-db-user-privileges':
-                command => "$mysql_command -e \"GRANT ALL ON $db_name.* TO '$db_user_dovecot'@'%' IDENTIFIED BY '$db_pass'\"",
-                unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$db_user_dovecot' AND host = '%'\" /usr/bin/mysql | /bin/grep $db_user_dovecot",
-        }
-
+			command => "$mysql_command -e \"GRANT ALL ON $db_name.* TO '$db_user_dovecot'@'%' IDENTIFIED BY '$db_pass'\"",
+			unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = '$db_user_dovecot' AND host = '%'\" mysql| /bin/grep $db_user_dovecot",
+			require => Class[Mysql::Server::Service]
+		}
 
 	}
  	else {
                 # Slave config
                 class { 'mysql::server':
-                        config_hash => { 'server_id' => "$mail_server_id", 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => "$db_name",'bind_address' => "$ipaddress"}
+                        override_options => { mysqld => { 'server_id' => "$mail_server_id", 'log_bin' => '/var/log/mysql/mysql-bin.log', 'binlog_do_db' => "$db_name",'bind_address' => "$ipaddress" } }
                 }
+
                 exec { 'change-master':
                         command => "$mysql_command -e \"CHANGE MASTER TO MASTER_HOST='$atomia_mail_master_ip',MASTER_USER='slave_user', MASTER_PASSWORD='$mail_slave_password', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=107\" ;START SLAVE;",
                         unless => "$mysql_command -e \"SHOW SLAVE STATUS\" | grep slave_user",
+			require => Class[Mysql::Server::Service]
                 }
         }
 

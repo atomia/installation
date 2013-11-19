@@ -80,8 +80,8 @@ Function ImportPfxCertificate($CertFileToImport, $CertStoreName)
 	# (ALSO see: http://jorgequestforknowledge.wordpress.com/2011/12/15/passwords-containing-special-characters-in-powershell/)
 	$PrivateKeyPassword = ''
 
-	# Target The Cert That Needs To Be Imported
-	$CertToImport = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 $CertFileToImport,$PrivateKeyPassword
+	$ImportFlags = "MachineKeySet, Exportable, PersistKeySet"
+	$CertToImport = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 $CertFileToImport,$PrivateKeyPassword,$ImportFlags
 
 	# Define The Scope And Certificate Store Within That Scope To Import The Certificate Into
 	# Available Cert Store Scopes are "LocalMachine" or "CurrentUser"
@@ -96,23 +96,24 @@ Function ImportPfxCertificate($CertFileToImport, $CertStoreName)
 	$CertStore.Close()
 }
 
-ImportPfxCertificate "C:\install\certificates\root.pfx" "root"
-ImportPfxCertificate "C:\install\certificates\actiontrail.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\wildcard.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\accountapi.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\automationserver.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\billingencrypt.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\billingapi.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\billing.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\guicert.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\billingapi.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\stssigning.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\automationencrypt.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\hcp.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\orderapi.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\sts.pfx" "my"
-ImportPfxCertificate "C:\install\certificates\userapi.pfx" "my"
-
+ImportPfxCertificate "C:\install\certificates\root.pfx" "Root"
+ImportPfxCertificate "C:\install\certificates\actiontrail.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\wildcard.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\accountapi.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\automationserver.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\billingencrypt.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\billingapi.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\billing.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\guicert.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\guicert.pfx" "TrustedPeople"
+ImportPfxCertificate "C:\install\certificates\stssigning.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\stssigning.pfx" "TrustedPeople"
+ImportPfxCertificate "C:\install\certificates\automationencrypt.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\hcp.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\orderapi.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\sts.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\userapi.pfx" "My"
+ImportPfxCertificate "C:\install\certificates\admin.pfx" "My"
 
 if (Test-Path "f:\xensetup.exe")
 {

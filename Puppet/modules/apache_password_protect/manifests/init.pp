@@ -1,13 +1,17 @@
 class apache_password_protect ($application_protect) {
+
 	if $application_protect == "atomiadns" {
-		$htconf = generate("/usr/bin/htpasswd", "-bn", $atomia_dns_agent_user, $atomia_dns_agent_password)
+		$htconf_dns = generate("/usr/bin/htpasswd", "-bn", $atomia_dns_agent_user, $atomia_dns_agent_password)
 	}
-	elsif $application_protect == "domainreg" {
-		$htconf = generate("/usr/bin/htpasswd", "-bn", $domainreg_service_username, $domainreg_service_password)
+	if $application_protect == "domainreg" {
+		$htconf_domain = generate("/usr/bin/htpasswd", "-bn", $domainreg_service_username, $domainreg_service_password)
 	}
-	elsif $application_protect == "webinstaller" {
-		$htconf = generate("/usr/bin/htpasswd", "-bn", $webinstaller_username, $webinstaller_password)
+	if $application_protect == "webinstaller" {
+		$htconf_webinst = generate("/usr/bin/htpasswd", "-bn", $webinstaller_username, $webinstaller_password)
 	}
+
+	$htconf = "${htconf_dns}${htconf_domain}${htconf_webinst}"
+
 	file { "/etc/apache2":
 		ensure => directory,
                 owner   => root,

@@ -11,6 +11,7 @@ class atomia_windows_base(
         $app_password = $atomia_windows_base::params::app_password,
         $ad_domain = $atomia_windows_base::params::ad_domain,
         $database_server = $atomia_windows_base::params::database_server,
+	$mirror_database_server = $atomia_windows_base::params::mirror_database_server,	
         $appdomain = $atomia_windows_base::params::appdomain,
         $actiontrail = $atomia_windows_base::params::actiontrail,
         $login = $atomia_windows_base::params::login,
@@ -46,7 +47,45 @@ class atomia_windows_base(
                 ensure => present
         }
 
-        dism { MSMQ-Server:
+	# 6.1 is 2008 R2, so this matches 2012 and forward
+	# see http://msdn.microsoft.com/en-us/library/windows/desktop/ms724832(v=vs.85).aspx
+	if versioncmp($kernelmajversion, "6.1") > 0 {
+	        dism { 'NetFx4Extended-ASPNET45':
+			ensure => present
+	        }
+
+	        dism { 'IIS-NetFxExtensibility45':
+			ensure => present
+	        }
+
+	        dism { 'IIS-ASPNET45':
+			ensure => present
+	        }
+
+        	dism { 'MSMQ-Services':
+			ensure => present
+		}
+
+        	dism { 'MSMQ':
+			ensure => present
+		}
+
+        	dism { 'windows-identity-foundation':
+			ensure => present
+		}
+
+        	dism { 'WCF-HTTP-Activation':
+			ensure => present,
+			all => true
+		}
+
+        	dism { 'WCF-HTTP-Activation45':
+			ensure => present,
+			all => true
+		}
+	}
+
+        dism { 'MSMQ-Server':
                 ensure => present
         }
 
@@ -130,13 +169,13 @@ class atomia_windows_base(
         }
 
         file { "unattended.ini":
-                path    => "C:\Program Files (x86)\Atomia\Common\unattended.ini",
+                path    => 'C:\Program Files (x86)\Atomia\Common\unattended.ini',
                 ensure => file,
                 content => template('atomia_windows_base/ini_template.erb'),
         }
 
-        file { "C:\Program Files (x86)\Atomia\Common\atomia.ini.location":
-                content => "C:\Program Files (x86)\Atomia\Common",
+        file { 'C:\Program Files (x86)\Atomia\Common\atomia.ini.location':
+                content => 'C:\Program Files (x86)\Atomia\Common',
         }
 
         file { 'C:\ProgramData\Atomia Installer\appupdater.ini' :
@@ -157,6 +196,11 @@ class atomia_windows_base(
         file { 'c:/install/certificates' :
                 source => 'puppet:///modules/atomia_windows_base/tools/certificates',
                 recurse => true
+        }
+
+        file { 'C:\inetpub\wwwroot\empty.crl':
+                ensure => 'file',
+                source => "puppet:///modules/atomia_windows_base/tools/empty.crl"
         }
 
 

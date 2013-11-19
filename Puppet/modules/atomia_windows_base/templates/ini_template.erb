@@ -7,6 +7,7 @@ User = apppooluser
 Password = <%= @app_password %>
 Domain = <%= @ad_domain %>
 SqlServer = <%= @database_server %>
+FailoverSqlServer = <%= @mirror_database_server %>
 PublicHost = <%= @appdomain %>
 
 [ActionTrail]
@@ -23,7 +24,7 @@ EncCertThumb = <%= @automationserver_encryption_cert_thumb %>
 
 [UserApi]
 Host = userapi.<%= @appdomain %>
-CertName = userapi.<% @appdomain %>
+CertName = userapi.<%= @appdomain %>
 
 [AccountApi]
 Host = accountapi.<%= @appdomain %>

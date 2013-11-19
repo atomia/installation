@@ -39,7 +39,7 @@ class apache_agent (
 	package { php5-curl: ensure => installed }
 	package { php5-pgsql: ensure => installed }
 
-    include nfsmount
+	include nfsmount
 
     exec { "/usr/sbin/a2enmod fcgid" :
           unless => "/bin/readlink -e /etc/apache2/mods-enabled/fcgid.load",
@@ -107,14 +107,20 @@ class apache_agent (
 	file { "/var/www/cgi-wrappers":
 		mode	=> 755,
 	}
-	
+
+	if $atomia_web_content_nfs_location {
+		$mountRequirement = [ "/storage/configuration" ]
+	} else {
+		$mountRequirement = []
+	}
+
 	# ensuring we have maps folder and needed files inside
 	file { "/storage/configuration/maps":
 			owner   => root,
 			group   => www-data,
 			mode    => 2750,
 			ensure  => directory,
-			require => Mount["/storage/configuration"],
+			require => Mount[$mountRequirement]
 	}
 	
 	file { "/storage/configuration/maps/frmrs.map":
@@ -219,6 +225,8 @@ class apache_agent (
                 name => apache-agent,
                 enable => true,
                 ensure => running,
+		hasstatus => false,
+		pattern => "python /etc/init.d/apache-agent start",
                 subscribe => [ Package["atomia-pa-apache"], File["/usr/local/apache-agent/settings.cfg"] ],
         }
 

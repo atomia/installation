@@ -1,0 +1,2 @@
+class atomia_facts {
+}

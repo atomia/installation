@@ -34,6 +34,7 @@ class adjoin(
 			source	=> "puppet:///modules/adjoin/common-account",
 		}
 
+		$ldap_conf_content = generate("/etc/puppet/modules/adjoin/files/ldap.conf.sh", $base_dn, $ldap_uris, $bind_user, $bind_password)
 		if $no_nscd != 1 {
 			package { nscd: ensure => present }
 		
@@ -46,13 +47,48 @@ class adjoin(
 				require => Package["nscd"],
 				notify => Service["nscd"],
 			}
+	               	service { nscd:
+                        	enable => false,
+                        	ensure => running,
+                       	 	subscribe => File["/etc/nscd.conf"],
+                	}
+
+	                file { "/etc/nsswitch.conf":
+	                        ensure => file,
+        	                owner   => root,
+                	        group   => root,
+                       	 	mode    => 644,
+                        	source  => "puppet:///modules/adjoin/nsswitch.conf",
+                        	notify => Service["nscd"],
+                	}
+        	        file { "/etc/ldap.conf":
+                	        ensure => file,
+                        	owner   => root,
+                        	group   => root,
+                        	mode    => 644,
+                        	content => $ldap_conf_content,
+                        	notify => Service["nscd"],
+                	}
+		}
+		else
+		{
+                	file { "/etc/nsswitch.conf":
+                        	ensure => file,
+                        	owner   => root,
+                        	group   => root,
+                        	mode    => 644,
+                        	source  => "puppet:///modules/adjoin/nsswitch.conf",
+                	}
+                      file { "/etc/ldap.conf":
+                                ensure => file,
+                                owner   => root,
+                                group   => root,
+                                mode    => 644,
+                                content => $ldap_conf_content,
+                        }
+
 		}
 
-		service { nscd:
-			enable => false,
-			ensure => running,
-			subscribe => File["/etc/nscd.conf"],
-		}
 
 		file { "/etc/pam.d/common-auth":
 			ensure => file,
@@ -70,24 +106,6 @@ class adjoin(
 			source	=> "puppet:///modules/adjoin/common-session",
 		}
 
-		file { "/etc/nsswitch.conf":
-			ensure => file,
-			owner	=> root,
-			group	=> root,
-			mode	=> 644,
-			source	=> "puppet:///modules/adjoin/nsswitch.conf",
-			notify => Service["nscd"],
-		}
-
-		$ldap_conf_content = generate("/etc/puppet/modules/adjoin/files/ldap.conf.sh", $base_dn, $ldap_uris, $bind_user, $bind_password)
-		file { "/etc/ldap.conf":
-			ensure => file,
-			owner	=> root,
-			group	=> root,
-			mode	=> 644,
-			content => $ldap_conf_content,
-			notify => Service["nscd"],
-		}
 	}
 }
 

@@ -33,52 +33,38 @@ class atomia_mysql (
 	$mysql_datadir = "/var/lib/mysql/data"
 	$mysql_command = "/usr/bin/mysql --defaults-file=/etc/mysql/debian.cnf -Ns"
 
-	package { mysql-server: ensure => installed }
+	#package { mysql-server: ensure => installed }
 
 	package { apache2: ensure => present }
 	package { libapache2-mod-php5: ensure => present }
 	package { phpmyadmin: ensure => present }
 
-        service { apache2:
+	class { '::mysql::server':
+  		override_options => { 'mysqld' => { 'bind_address' => $ipaddress } }
+	}	
+
+	mysql_user { "$mysql_username@$provisioning_host":
+ 		ensure          => 'present',
+		password_hash	=> mysql_password($mysql_password),
+	}
+
+	mysql_grant { "$mysql_username/*.*":
+  		ensure     => 'present',
+  		options    => ['GRANT'],
+  		privileges => ['ALL'],
+  		table      => '*.*',
+  		user       => "$mysql_username@$provisioning_host",
+	}
+       
+	 service { apache2:
                 name => apache2,
                 enable => true,
                 ensure => running,
         }
 
-	service { "mysql":
-                name => "mysql",
-                enable => true,
-                ensure => running,
-                subscribe => [ Package["mysql-server"] ]
-	}
-
-	exec { "setup-grants":
-		path => "/usr/bin",
-		command => "$mysql_command -e \"DELETE FROM user WHERE user = ''; DELETE FROM user WHERE user = 'root'; FLUSH PRIVILEGES;\" mysql", 
-		onlyif => "/usr/bin/mysql -u root -e 'SHOW STATUS'",
-	}
-
-	file { "/tmp/fix-debian-maint.sh":
-		owner => root,
-		group => root,
-		source => "puppet:///modules/atomia_mysql/fix-debian-maint.sh",
-		mode => '777',
-	}
-	exec { "fix-debian-maint":
-		command => "/bin/sh /tmp/fix-debian-maint.sh",
-		unless => "$mysql_command -e \"SHOW GRANTS FOR 'debian-sys-maint'@'localhost'\" | grep ALL"
-	}
-	
-
 	exec { "delete-test-db":
 		command => "$mysql_command -e \"DROP DATABASE test;\" ",
 		onlyif => "$mysql_command -e \"SHOW DATABASES;\" | grep test"
-	}
-
-	# Create provisioning user
-	exec { "create-provisioning-user":
-		command => "$mysql_command -e \"CREATE USER '$mysql_username'@'$provisioning_host' IDENTIFIED BY '$mysql_password'; GRANT ALL PRIVILEGES ON *.* TO '$mysql_username'@'$provisioning_host'  WITH GRANT OPTION; FLUSH PRIVILEGES;\"",
-		unless => "$mysql_command -e \"use mysql; select * from user where User='$mysql_username';\" | grep $mysql_username"
 	}
 
 	file { "/etc/cron.hourly/ubuntu-mysql-fix":

@@ -23,7 +23,7 @@ class atomiadns_powerdns ($ssl_enabled,$ssl_cert_file,$atomia_dns_agent_user,$at
 		subscribe => [ File["/etc/atomiadns.conf.powerdnssync"] ],
         }
 
-	if $ssl_enabled {
+	if $ssl_enabled == '1' {
                 file { "/etc/atomiadns-mastercert.pem":
                         owner   => root,
                         group   => root,
@@ -44,20 +44,23 @@ class atomiadns_powerdns ($ssl_enabled,$ssl_cert_file,$atomia_dns_agent_user,$at
                 require => [ Package["atomiadns-powerdns-database"], Package["atomiadns-powerdnssync"] ],
 		notify => Exec["atomiadns_config_sync"],
         }
+	if !defined(File["/usr/bin/atomiadns_config_sync"])
+	{
+        	file { "/usr/bin/atomiadns_config_sync":
+                	owner   => root,
+                	group   => root,
+                	mode    => 500,
+			source  => "puppet:///modules/atomiadns_powerdns/atomiadns_config_sync",
+                	require => [ Package["atomiadns-powerdns-database"], Package["atomiadns-powerdnssync"] ],
+        	}
+	        exec { "atomiadns_config_sync":
+	                refreshonly => true,
+        	        require => File["/usr/bin/atomiadns_config_sync"],
+               	 	before => Service["atomiadns-powerdnssync"],
+                	command => "/usr/bin/atomiadns_config_sync $atomia_dns_ns_group",
+        	}
 
-        file { "/usr/bin/atomiadns_config_sync":
-                owner   => root,
-                group   => root,
-                mode    => 500,
-		source  => "puppet:///modules/atomiadns_powerdns/atomiadns_config_sync",
-                require => [ Package["atomiadns-powerdns-database"], Package["atomiadns-powerdnssync"] ],
-        }
+	}
 
-        exec { "atomiadns_config_sync":
-                refreshonly => true,
-		require => File["/usr/bin/atomiadns_config_sync"],
-                before => Service["atomiadns-powerdnssync"],
-		command => "/usr/bin/atomiadns_config_sync $atomia_dns_ns_group",
-        }
 }
 

@@ -7,7 +7,7 @@ class fsagent(
         $atomia_web_config_nfs_location,
         $apache_conf_dir,
         $atomia_iis_config_nfs_location,
-        $iis_config_dir
+        $iis_config_dir,
 	) {
 
 	package { python-software-properties: ensure => present }
@@ -18,12 +18,10 @@ class fsagent(
 	class { 'apt': }
 	apt::ppa { 'ppa:chris-lea/node.js': }
 
-   	exec { "/usr/bin/apt-get update":
-      		alias => "aptgetupdate",
-      		subscribe => File["/etc/apt/sources.list"],
-   	}
-	
-	package { nodejs: ensure => present }
+	package { nodejs:
+		ensure => present,
+		require => Apt::Ppa['ppa:chris-lea/node.js']
+	}
 
 	if $atomia_linux_software_auto_update {
 		package { atomia-fsagent: ensure => latest }
@@ -33,13 +31,13 @@ class fsagent(
 
 	include nfsmount
 
-		file { "/storage/content/backup":
-			ensure => "directory",
+        file { "/storage/content/backup":
+            	ensure => "directory",
                 owner   => root,
                 group   => root,
                 mode    => 710,
-				require => mount["/storage/content"],
-		}
+       }
+
 
         $settings_content = generate("/etc/puppet/modules/fsagent/files/settings.cfg.sh", $fs_agent_user, $fs_agent_password)
         file { "/etc/default/fsagent":
@@ -78,6 +76,8 @@ class fsagent(
                 name => atomia-fsagent,
                 enable => true,
                 ensure => running,
+		hasstatus => false,
+		pattern => "/usr/bin/nodejs /usr/lib/atomia-fsagent/main.js",
                 subscribe => [ Package["atomia-fsagent"], File["/etc/default/fsagent"] ],
         }
 		
