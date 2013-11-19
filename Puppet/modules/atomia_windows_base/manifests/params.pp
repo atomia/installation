@@ -3,6 +3,7 @@ class atomia_windows_base::params {
         $app_password                                   = ""
         $ad_domain                                      = "ad.atomia.com"
         $database_server                                = "127.0.0.1"
+	$mirror_database_server				= ""
         $appdomain                                      = "atomia.com"
         $actiontrail                                    = "actiontrail"
         $login                                          = "login"

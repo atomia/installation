@@ -11,6 +11,7 @@ class atomia_windows_base(
         $app_password = $atomia_windows_base::params::app_password,
         $ad_domain = $atomia_windows_base::params::ad_domain,
         $database_server = $atomia_windows_base::params::database_server,
+	$mirror_database_server = $atomia_windows_base::params::mirror_database_server,	
         $appdomain = $atomia_windows_base::params::appdomain,
         $actiontrail = $atomia_windows_base::params::actiontrail,
         $login = $atomia_windows_base::params::login,

@@ -33,6 +33,7 @@ $dc_ip = ""
 
 # Ip address of the Atomia database server
 $database_server = ""
+$mirror_database_server = ""
 
 # Main domain for the environment for example atomia.com (for an env with hcp.atomia.com, order.atomia.com)
 $appdomain = ""
