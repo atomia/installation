@@ -14,7 +14,7 @@ $client.DownloadFile( $MvcUrl, (Join-Path $location "AspNetMVC1.msi") )
 Start-Process msiexec "/i AspNetMVC1.msi /l* AspNetMVC1.log /quiet" -wait
 
 "Downloading Firefox"
-$firefoxUrl = "http://installer.atomia.com/openstack/data/firefox.exe"
+$firefoxUrl = "http://download-installer.cdn.mozilla.net/pub/firefox/releases/25.0.1/win32/en-GB/Firefox%20Setup%2025.0.1.exe"
 $client.DownloadFile( $firefoxUrl, (Join-Path $location "firefox.exe") )
 "Installing Firefox"
 Start-Process firefox.exe "-ms" -wait
