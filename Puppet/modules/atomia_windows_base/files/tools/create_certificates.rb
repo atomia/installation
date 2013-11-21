@@ -33,6 +33,7 @@ stssigning = "STS signing certificate"
 automationencrypt = "Automation Server Data Encryption Cert"
 billingencrypt = "Billing Data Encryption Certificate"
 guicert = "Atomia GUI cert"
+atomiadns = "atomiadns.#{appdomain}"
 
 
 
@@ -61,6 +62,7 @@ system("openssl genrsa -out \"private/stssigning.key\" 4096")
 system("openssl genrsa -out \"private/automationencrypt.key\" 4096")
 system("openssl genrsa -out \"private/billingencrypt.key\" 4096")
 system("openssl genrsa -out \"private/guicert.key\" 4096")
+system("openssl genrsa -out \"private/atomiadns.key\" 4096")
 
 # Generate CSRs
 system("openssl req -new -key \"private/#{actiontrail}.key\" -subj \"/C=/ST=/L=/O=/CN=#{actiontrail}.#{appdomain}\" -out \"csr/#{actiontrail}.csr\"")
@@ -80,6 +82,7 @@ system("openssl req -new -key \"private/stssigning.key\" -subj \"/C=/ST=/L=/O=/C
 system("openssl req -new -key \"private/automationencrypt.key\" -subj \"/C=/ST=/L=/O=/CN=automationencrypt.#{appdomain}\" -out \"csr/automationencrypt.csr\"")
 system("openssl req -new -key \"private/billingencrypt.key\" -subj \"/C=/ST=/L=/O=/CN=billingencrypt.#{appdomain}\" -out \"csr/billingencrypt.csr\"")
 system("openssl req -new -key \"private/guicert.key\" -subj \"/C=/ST=/L=/O=/CN=guicert.#{appdomain}\" -out \"csr/guicert.csr\"")
+system("openssl req -new -key \"private/atomiadns.key\" -subj \"/C=/ST=/L=/O=/CN=#{atomiadns}\" -out \"csr/atomiadns.csr\"")
 
 
 def sign_certificate(file_name,certname)
@@ -107,6 +110,7 @@ sign_certificate("stssigning",stssigning)
 sign_certificate("automationencrypt",automationencrypt)
 sign_certificate("billingencrypt",billingencrypt)
 sign_certificate("guicert",guicert)
+sign_certificate("atomiadns",atomiadns)
 
 system("openssl ca -config ca.cnf -gencrl -out empty.crl")
 
