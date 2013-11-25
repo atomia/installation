@@ -1,9 +1,18 @@
 class atomiarepository {
+	# Workaround for Debian Jessie
+	if $operatingsystem == "Debian" {
+		# Currently only supports Wheezy
+		$repo = "debian-wheezy wheezy main"
+	}
+	else {
+		$rep = "ubuntu-$distcodename $distcodename main"
+	}
+
 	file { "/etc/apt/sources.list.d/atomia.list":
 		owner   => root,
 		group   => root,
 		mode    => 440,
-		content => "deb http://apt.atomia.com/ubuntu-$lsbdistcodename $lsbdistcodename main",
+		content => "deb http://apt.atomia.com/${repo}",
 	}
 
 	file { "/etc/apt/ATOMIA-GPG-KEY.pub":
