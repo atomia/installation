@@ -43,7 +43,7 @@ class atomiadns (
 			{
 				exec { "/usr/bin/sudo -u postgres psql zonedata -c \"INSERT INTO nameserver_group (name) VALUES ('${val[ns_group]}')\"":
 					require => [ Package["atomiadns-masterserver"], Package["atomiadns-client"], Package["sudo"] ],
-					unless => "/usr/bin/sudo -u postgres psql zonedata -tA -c \"SELECT name FROM nameserver_group WHERE name = '${val[ns_group]}'\" | grep '^$c\$'",
+					unless => "/usr/bin/sudo -u postgres psql zonedata -tA -c \"SELECT name FROM nameserver_group WHERE name = '${val[ns_group]}'\" | grep '^${val[ns_group]}\$'",
 				}
 			}
 		}
@@ -91,10 +91,10 @@ class atomiadns (
     }
 	
 	exec { "atomiadns_config_sync":
-            refreshonly => true,
-			require => [ File["/usr/bin/atomiadns_config_sync"], File["/etc/atomiadns.conf.master"] ],
-			command => "/usr/bin/atomiadns_config_sync $atomia_dns_ns_group",
-    }
+		require => [ File["/usr/bin/atomiadns_config_sync"], File["/etc/atomiadns.conf.master"] ],
+		command => "/usr/bin/atomiadns_config_sync $atomia_dns_ns_group",
+		unless => "/bin/grep  soap_uri /etc/atomiadns.conf",
+    	}
 
 
 	if $atomia_dns_zones_to_add {
