@@ -1,4 +1,4 @@
-class atomiadns_powerdns ($ssl_enabled,$ssl_cert_file,$atomia_dns_agent_user,$atomia_dns_agent_password,$atomia_dns_url,$atomia_dns_ns_group)
+class atomiadns_powerdns ($ssl_enabled,$atomia_dns_agent_user,$atomia_dns_agent_password,$atomia_dns_url,$atomia_dns_ns_group)
 {
 	if $atomia_linux_all_in_one {
 		require atomiadns
@@ -28,7 +28,7 @@ class atomiadns_powerdns ($ssl_enabled,$ssl_cert_file,$atomia_dns_agent_user,$at
                         owner   => root,
                         group   => root,
                         mode    => 440,
-                        content => $ssl_cert_file,
+			source => "puppet:///modules/atomiadns/atomiadns_cert"
                 }
 
 		$atomiadns_conf = generate("/etc/puppet/modules/atomiadns_powerdns/files/generate_conf.sh", $atomia_dns_agent_user, $atomia_dns_agent_password, $hostname, $atomia_dns_url, "ssl")
