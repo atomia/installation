@@ -26,7 +26,7 @@ $use_nfs3
 			device => $atomia_web_content_nfs_location,
 			fstype => $fs_type,
 			remounts => false,
-			options => "rw",
+			options => "rw,noatime",
 			ensure => mounted,
 			require => File[$atomia_web_content_mount_point],
 		}
@@ -49,7 +49,7 @@ $use_nfs3
 			device => $atomia_web_config_nfs_location,
 			fstype => $fs_type,
 			remounts => false,
-			options => "rw",
+			options => "rw,noatime",
 			ensure => mounted,
 			require => File["$atomia_web_config_mount_point/all_configurations"],
 		}
@@ -64,7 +64,7 @@ $use_nfs3
 				device => "$atomia_web_config_nfs_location/$apache_conf_dir",
 				fstype => $fs_type,
 				remounts => false,
-				options => "rw",
+				options => "rw,noatime",
 				ensure => mounted,
 				require => File["$atomia_web_config_mount_point/all_configurations/$apache_conf_dir"],
 			}
@@ -76,7 +76,7 @@ $use_nfs3
 			device => $atomia_iis_config_nfs_location,
 			fstype => $fs_type,
 			remounts => false,
-			options => "rw",
+			options => "rw,noatime",
 			ensure => mounted,
 			require => File["$atomia_web_config_mount_point/iis_config_dir"],
 		}
