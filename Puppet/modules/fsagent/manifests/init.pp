@@ -1,13 +1,14 @@
 class fsagent(
 	$fs_agent_user,
 	$fs_agent_password,
-        $atomia_web_content_mount_point,
-        $atomia_web_content_nfs_location,
-        $atomia_web_config_mount_point,
-        $atomia_web_config_nfs_location,
-        $apache_conf_dir,
-        $atomia_iis_config_nfs_location,
-        $iis_config_dir,
+        $atomia_web_content_mount_point = "",
+        $atomia_web_content_nfs_location = "",
+        $atomia_web_config_mount_point = "",
+        $atomia_web_config_nfs_location = "",
+        $apache_conf_dir = "",
+        $atomia_iis_config_nfs_location = "",
+        $iis_config_dir = "",
+	$use_hiera = "0"
 	) {
 
 	package { python-software-properties: ensure => present }
@@ -29,7 +30,18 @@ class fsagent(
 		package { atomia-fsagent: ensure => present }
 	}
 
-	include nfsmount
+	# Keep compatibility with non-hiera deployments	
+	if $use_hiera == 0 {
+		class { "nfsmount":
+	 	       	atomia_web_content_mount_point => $atomia_web_content_mount_point,
+        		atomia_web_content_nfs_location => $atomia_web_content_nfs_location,
+        		atomia_web_config_mount_point => $atomia_web_config_mount_point,
+        		atomia_web_config_nfs_location => $atomia_web_config_nfs_location,
+        		apache_conf_dir => $apache_conf_dir,
+        		atomia_iis_config_nfs_location => $atomia_iis_config_nfs_location,
+        		iis_config_dir => $iis_config_dir,
+		}
+	}
 
         file { "/storage/content/backup":
             	ensure => "directory",

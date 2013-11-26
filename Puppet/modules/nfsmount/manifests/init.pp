@@ -1,4 +1,14 @@
-class nfsmount {
+class nfsmount(
+	$apache_conf_dir,
+	$iis_config_dir,
+	$atomia_iis_config_nfs_location,
+	$atomia_web_config_nfs_location,
+	$atomia_web_content_nfs_location,
+	$atomia_web_content_mount_point,
+	$atomia_web_config_mount_point,
+	$use_nfs3
+) {
+$use_nfs3
 	if !defined(Package['nfs-common']) {
 		package { nfs-common: ensure => present }
 	}

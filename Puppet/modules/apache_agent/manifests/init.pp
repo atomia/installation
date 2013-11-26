@@ -1,17 +1,18 @@
 class apache_agent (
-	 $ssl_enabled = 0,
-	 $atomia_clustered = 1,
-	 $apache_agent_user,
-	 $apache_agent_password,
-	$use_nfs3,
-        $atomia_web_content_mount_point,
-        $atomia_web_content_nfs_location,
-        $atomia_web_config_mount_point,
-        $atomia_web_config_nfs_location,
-        $apache_conf_dir,
-        $atomia_iis_config_nfs_location,
-        $iis_config_dir
-	){
+	$ssl_enabled = 0,
+	$atomia_clustered = 1,
+	$apache_agent_user,
+	$apache_agent_password,
+	$use_nfs3 = "",
+        $atomia_web_content_mount_point = "",
+        $atomia_web_content_nfs_location = "",
+        $atomia_web_config_mount_point = "",
+        $atomia_web_config_nfs_location = "",
+        $apache_conf_dir = "",
+        $atomia_iis_config_nfs_location = "",
+        $iis_config_dir = "",
+	$use_hiera = 0
+){
 	if $atomia_linux_software_auto_update {
 	        package { atomia-pa-apache: ensure => latest }
 	        package { atomiastatisticscopy: ensure => latest }
@@ -39,12 +40,23 @@ class apache_agent (
 	package { php5-curl: ensure => installed }
 	package { php5-pgsql: ensure => installed }
 
-	include nfsmount
+        # Keep for compatibility with non hiera deployments
+        if $use_hiera == "0" {
+                class { "nfsmount":
+                        atomia_web_content_mount_point => $atomia_web_content_mount_point,
+                        atomia_web_content_nfs_location => $atomia_web_content_nfs_location,
+                        atomia_web_config_mount_point => $atomia_web_config_mount_point,
+                        atomia_web_config_nfs_location => $atomia_web_config_nfs_location,
+                        apache_conf_dir => $apache_conf_dir,
+                        atomia_iis_config_nfs_location => $atomia_iis_config_nfs_location,
+                        iis_config_dir => $iis_config_dir,
+                }
+        }
 
-    exec { "/usr/sbin/a2enmod fcgid" :
-          unless => "/bin/readlink -e /etc/apache2/mods-enabled/fcgid.load",
-          notify => Service[apache2]
-    }
+    	exec { "/usr/sbin/a2enmod fcgid" :
+          	unless => "/bin/readlink -e /etc/apache2/mods-enabled/fcgid.load",
+          	notify => Service[apache2]
+    	}
 
 	if $ssl_enabled != 0{
 		$ssl_generate_var = "ssl"

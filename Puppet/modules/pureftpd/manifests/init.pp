@@ -5,21 +5,33 @@ class pureftpd (
 	$provisioning_host,
 	$pureftpd_password,
 	$ftp_cluster_ip,
-        $use_nfs3,
-        $atomia_web_content_mount_point,
-        $atomia_web_content_nfs_location,
-        $atomia_web_config_mount_point,
-        $atomia_web_config_nfs_location,
-        $apache_conf_dir,
-        $atomia_iis_config_nfs_location,
-        $iis_config_dir,
+        $use_nfs3 = "",
+        $atomia_web_content_mount_point = "",
+        $atomia_web_content_nfs_location = "",
+        $atomia_web_config_mount_point = "",
+        $atomia_web_config_nfs_location = "",
+        $apache_conf_dir = "",
+        $atomia_iis_config_nfs_location = "",
+        $iis_config_dir = "",
 	$atomia_pureftp_db_is_master,
 	$pureftpd_slave_password,
-	$ssl_enabled = 0
+	$ssl_enabled = 0,
+	$use_hiera = "0"
 	){
 	package { pure-ftpd-mysql: ensure => installed }
 
-	include nfsmount
+        # Keep for compatibility with non hiera deployments
+        if $use_hiera == "0" {
+                class { "nfsmount":
+                        atomia_web_content_mount_point => $atomia_web_content_mount_point,
+                        atomia_web_content_nfs_location => $atomia_web_content_nfs_location,
+                        atomia_web_config_mount_point => $atomia_web_config_mount_point,
+                        atomia_web_config_nfs_location => $atomia_web_config_nfs_location,
+                        apache_conf_dir => $apache_conf_dir,
+                        atomia_iis_config_nfs_location => $atomia_iis_config_nfs_location,
+                        iis_config_dir => $iis_config_dir,
+                }
+        }
 
 	$mysql_command = "/usr/bin/mysql --defaults-file=/etc/mysql/debian.cnf -Ns"
 	
