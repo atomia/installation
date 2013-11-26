@@ -5,7 +5,7 @@ class atomiarepository {
 		$repo = "debian-wheezy wheezy main"
 	}
 	else {
-		$rep = "ubuntu-$distcodename $distcodename main"
+		$repo = "ubuntu-$distcodename $distcodename main"
 	}
 
 	file { "/etc/apt/sources.list.d/atomia.list":

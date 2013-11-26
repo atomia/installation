@@ -11,8 +11,11 @@ class apt::params {
         'squeeze': {
           $backports_location = 'http://backports.debian.org/debian-backports'
         }
-        default: {
+        'wheezy': {
           $backports_location = 'http://ftp.debian.org/debian/'
+        }
+        default: {
+          $backports_location = 'http://http.debian.net/debian/'
         }
       }
     }
