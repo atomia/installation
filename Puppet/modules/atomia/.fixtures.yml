@@ -1,0 +1,4 @@
+fixtures:
+  symlinks:
+    atomia: "#{source_dir}"
+
