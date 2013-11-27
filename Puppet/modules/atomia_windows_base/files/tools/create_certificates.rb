@@ -48,7 +48,7 @@ system("openssl pkcs12 -export -in ca.crt -inkey private/ca.key  -name \"#{ca_na
 system("openssl genrsa -out \"private/actiontrail.key\" 4096")
 system("openssl genrsa -out \"private/login.key\" 4096")
 system("openssl genrsa -out \"private/order.key\" 4096")
-system("openssl genrsa -out \"private/billing}.key\" 4096")
+system("openssl genrsa -out \"private/billing.key\" 4096")
 system("openssl genrsa -out \"private/admin.key\" 4096")
 system("openssl genrsa -out \"private/hcp.key\" 4096")
 system("openssl genrsa -out \"private/automationserver.key\" 4096")
