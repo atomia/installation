@@ -25,7 +25,6 @@ class atomia::atomiadns_powerdns (
 
         service { atomiadns-powerdnssync:
                 name => atomiadns-powerdnssync,
-                enable => true,
                 ensure => running,
 		pattern => ".*powerdnssync.*",
 		require => [ Package["atomiadns-powerdns-database"], Package["atomiadns-powerdnssync"], File["/etc/atomiadns.conf.powerdnssync"] ],

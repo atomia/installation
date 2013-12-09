@@ -19,7 +19,6 @@ class atomia::nfsmount(
 	}
 
 	if $atomia_web_content_nfs_location {
-		include adjoin
 
 		mount { $atomia_web_content_mount_point:
 			device => $atomia_web_content_nfs_location,
@@ -70,7 +69,7 @@ class atomia::nfsmount(
 		}
 	}
 	
-	if $atomia_iis_config_nfs_location {
+	if $atomia_iis_config_nfs_location != "" {
 		mount { "$atomia_web_config_mount_point/$iis_config_dir":
 			device => $atomia_iis_config_nfs_location,
 			fstype => $fs_type,
