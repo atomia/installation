@@ -7,7 +7,8 @@ class atomia::adjoin(
 		$ldap_uris  			= "",  
 		$bind_user 			= "", 
 		$bind_password  		= "",
-		$no_nscd 			= 0
+		$no_nscd 			= 0,
+		$use_nslcd_conf			= 0
 	) inherits adjoin::params {
 
 	if $operatingsystem == 'windows' {
@@ -34,7 +35,8 @@ class atomia::adjoin(
 			source	=> "puppet:///modules/atomia/adjoin/common-account",
 		}
 
-		$ldap_conf_content = generate("/etc/puppet/modules/adjoin/files/ldap.conf.sh", $base_dn, $ldap_uris, $bind_user, $bind_password)
+		$ldap_conf_content = generate("/etc/puppet/modules/atomia/files/adjoin/ldap.conf.sh", $base_dn, $ldap_uris, $bind_user, $bind_password)
+		$nslcd_conf_content = generate("/etc/puppet/modules/atomia/files/adjoin/nslcd.conf.sh", $base_dn, $ldap_uris, $bind_user, $bind_password)
 		if $no_nscd != 1 {
 			package { nscd: ensure => present }
 		
@@ -89,6 +91,16 @@ class atomia::adjoin(
 
 		}
 
+		if $use_nslcd_conf == 1 {
+                      file { "/etc/nslcd.conf":
+                                ensure => file,
+                                owner   => root,
+                                group   => root,
+                                mode    => 600,
+                                content => $nslcd_conf_content,
+				notify => Service["nscd"],
+                        }
+		}
 
 		file { "/etc/pam.d/common-auth":
 			ensure => file,

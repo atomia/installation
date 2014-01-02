@@ -39,9 +39,9 @@ class atomia::atomiadns_powerdns (
 			source => "puppet:///modules/atomia/atomiadns_powerdns/atomiadns_cert"
                 }
 
-		$atomiadns_conf = generate("/etc/puppet/modules/atomiadns_powerdns/files/generate_conf.sh", $agent_user, $agent_password, $hostname, $atomia_dns_url, "ssl")
+		$atomiadns_conf = generate("/etc/puppet/modules/atomiadns_powerdns/files/generate_conf.sh", $agent_user, $agent_password, $fqdn, $atomia_dns_url, "ssl")
 	} else {
-		$atomiadns_conf = generate("/etc/puppet/modules/atomiadns_powerdns/files/generate_conf.sh", $agent_user, $agent_password, $hostname, $atomia_dns_url, "nossl")
+		$atomiadns_conf = generate("/etc/puppet/modules/atomiadns_powerdns/files/generate_conf.sh", $agent_user, $agent_password, $fqdn, $atomia_dns_url, "nossl")
 	}
 
 	exec { "/usr/bin/atomiapowerdnssync add_server $atomia_dns_ns_group && /etc/init.d/atomiadns-powerdnssync stop && /etc/init.d/atomiadns-powerdnssync start && /usr/bin/atomiapowerdnssync full_reload_online":

@@ -1,5 +1,5 @@
 class atomia::haproxy(
-	$agent_user,
+	$agent_user = "haproxy",
 	$agent_password
 	) {
 	
@@ -13,7 +13,7 @@ class atomia::haproxy(
 		}
 	}
 
-	$haproxy_conf = generate("/etc/puppet/modules/atomia/haproxy/files/atomia-pa-haproxy.conf.sh", $agent_user,$agent_password)
+	$haproxy_conf = generate("/etc/puppet/modules/atomia/files/haproxy/atomia-pa-haproxy.conf.sh", $agent_user,$agent_password)
 
 	file { "/etc/atomia-pa-haproxy.conf":
 		owner   => root,

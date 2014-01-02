@@ -58,7 +58,7 @@ class atomia::mailserver (
                 }
 
                 exec { 'grant-replicate-privileges':
-                        command => "$mysql_command -e \"GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY 'slave_password';FLUSH PRIVILEGES\";",
+                        command => "$mysql_command -e \"GRANT REPLICATION SLAVE ON *.* TO 'slave_user'@'%' IDENTIFIED BY '$slave_password';FLUSH PRIVILEGES\";",
                         unless => "$mysql_command -e \"SELECT user, host FROM user WHERE user = 'slave_user'\" mysql | /bin/grep slave_user",
 			require => Class[Mysql::Server::Service]
                 }
@@ -108,7 +108,7 @@ class atomia::mailserver (
                 }
 
                 exec { 'change-master':
-                        command => "$mysql_command -e \"CHANGE MASTER TO MASTER_HOST='$master_ip',MASTER_USER='slave_user', MASTER_PASSWORD='$slave_password', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=107\" ;START SLAVE;",
+                        command => "$mysql_command -e \"CHANGE MASTER TO MASTER_HOST='$master_ip',MASTER_USER='slave_user', MASTER_PASSWORD='$slave_password', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=107;START SLAVE;\"",
                         unless => "$mysql_command -e \"SHOW SLAVE STATUS\" | grep slave_user",
 			require => Class[Mysql::Server::Service]
                 }

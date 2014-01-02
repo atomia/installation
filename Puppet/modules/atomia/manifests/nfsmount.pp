@@ -36,7 +36,7 @@ class atomia::nfsmount(
 		$config_path = "apache"
 	}
 
-	if $atomia_web_config_nfs_location {
+	if $atomia_web_config_nfs_location != "" {
 	
 		file { "$atomia_web_config_mount_point/all_configurations":
 			ensure => directory,
