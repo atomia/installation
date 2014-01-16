@@ -214,7 +214,7 @@ class atomia::mailserver (
 		owner   => root,
 		group   => virtual,
 		mode    => 750,
-		source  => "puppet:///modules/postfix_mx/vacation.pl",
+		content => template('atomia/mailserver/vacation.pl'),  
 	}
 
 	file { "/var/log/vacation.log":
