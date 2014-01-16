@@ -1,8 +1,8 @@
 Puppet/manifests/nodes/
-Puppet/modules/atomia_windows_base/files/tools/ca.crt
-Puppet/modules/atomia_windows_base/files/tools/certificates/
-Puppet/modules/atomia_windows_base/files/tools/csr/
-Puppet/modules/atomia_windows_base/files/tools/empty.crl
-Puppet/modules/atomia_windows_base/files/tools/private/
-Puppet/modules/atomiadns/files/atomiadns_cert
+*certificates*
+*private*
+*csr*
+ca.crt
+empty.crl
+atomiadns_cert
 *.swp

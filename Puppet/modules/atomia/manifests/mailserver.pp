@@ -42,7 +42,7 @@ class atomia::mailserver (
 		package { zoo: ensure => installed } 
 	}
 
-	$db_hosts = "localhost" 
+	$db_hosts = $ipaddress 
 	$db_user = "vmail"
 	$db_user_smtp = "smtp_vmail"
 	$db_user_dovecot = "dovecot_vmail"
@@ -127,7 +127,7 @@ class atomia::mailserver (
 			owner   => root,
 			group   => root,
 			mode    => 444,
-			source  => "puppet:///modules/postfix_mx/main.cf",
+			content  => template('atomia/mailserver/main.cf'),
 			require => Package["postfix-mysql"]
 		}
 	}
