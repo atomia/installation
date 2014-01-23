@@ -1,0 +1,76 @@
+DISCLAIMER:
+THIS ADJOIN TOOL IS NOT SUPPORTED BY SUN. IT SHOULD BE CONSIDERED AS PROOF
+OF CONCEPT/TECHNOLOGY AND SHOULD NOT BE USED FOR PRODUCTION.
+
+** See http://www.sun.com/bigadmin/common/berkeley_license.html for
+   License details about this software.
+
+** adjoin script automates process of joining Solaris client to a
+   AD domain. It automates the following steps:
+   1. Auto-detect Active Directory domain controller. 
+   2. Creates a machine account (a.k.a. Computer object) for the
+      Solaris host in Active Directory and generates a random
+      password for this account. 
+   3. Configures the Solaris host as a Kerberos client of AD KDC
+      by setting up /etc/krb5/krb5.conf on the Solaris host.
+   4. Sets up /etc/krb5/krb5.keytab file on the Solaris host using
+      the keys generated for the machine account.
+   5. If you run this script as "adleave" (symlink) then it
+      deletes the machine account and leaves the AD domain.
+
+** Files
+sources
+	src/adjoin.sh
+	src/ksetpw.c
+sparc bits
+	sparc/adjoin
+	sparc/adleave
+	sparc/ksetpw
+i386 bits
+	i386/adjoin
+	i386/adleave
+	i386/ksetpw
+
+** Build the ksetpw program if the binaries are not available
+   for your platform
+   For Solaris 10 08/07:
+% cc -o ksetpw ksetpw.c -R/usr/lib/gss /usr/lib/gss/mech_krb5.so
+   For OpenSolaris:
+% cc -o ksetpw ksetpw.c -lkrb5
+
+** Configure /etc/resolv.conf to point to AD DNS server
+% cat /etc/resolv.conf
+domain mydomain.com
+search mydomain.com otherdomain.com
+nameserver 11.22.33.44
+
+** Use DNS for host resolution
+% grep dns /etc/nsswitch.conf
+hosts:      dns files
+ipnodes:    dns files
+
+** Restart nscd and dns if resolv.conf or nsswitch.conf were modified
+% svcadm restart network/dns/client
+% svcadm restart name-service-cache
+
+** In the same directory where you have ksetpw run the adjoin script
+      -h to get help
+      -n for dry runs
+      -f force creation of machine account in AD by deleting existing entry
+% ./adjoin -f
+
+** Optional: manually create DNS A and PTR RRs in AD for your client
+
+** Issues:
+   1. To use this script with Windows 2008 server, remove "@${realm}" from
+      the userPrincipalName otherwise you'll get Authentication error
+      # diff adjoin.win2k3 adjoin.longhorn  
+      765c765
+      < userPrincipalName: host/${fqdn}@${realm}
+      ---
+      > userPrincipalName: host/${fqdn}
+
+
+** Acknowledgements
+Originally written by Nico Williams for the Winchester OpenSolaris project
+Updated by Baban Kenkre for Solaris 10 08/07

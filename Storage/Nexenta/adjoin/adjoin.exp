@@ -1,0 +1,11 @@
+#!/usr/bin/expect -df
+
+set timeout 15
+
+spawn  ./adjoin/adjoin -f
+expect {
+        -re ".*Password for.*"
+        {
+		send -- "$::env(domain_admin_pass)\r"
+	}
+}

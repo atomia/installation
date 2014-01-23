@@ -1,0 +1,50 @@
+<?xml version='1.0'?>
+<!DOCTYPE service_bundle SYSTEM '/usr/share/lib/xml/dtd/service_bundle.dtd.1'>
+<service_bundle type='manifest' name='export'>
+  <service name='system/idmap' type='service' version='0'>
+    <create_default_instance enabled='true'/>
+    <single_instance/>
+    <dependency name='rpcbind' grouping='require_all' restart_on='restart' type='service'>
+      <service_fmri value='svc:/network/rpc/bind'/>
+    </dependency>
+    <dependency name='filesystem-minimal' grouping='require_all' restart_on='error' type='service'>
+      <service_fmri value='svc:/system/filesystem/minimal'/>
+    </dependency>
+    <exec_method name='start' type='method' exec='/usr/lib/idmapd' timeout_seconds='60'/>
+    <exec_method name='stop' type='method' exec=':kill' timeout_seconds='60'/>
+    <exec_method name='refresh' type='method' exec=':kill -HUP' timeout_seconds='60'/>
+    <property_group name='config' type='application'>
+      <stability value='Unstable'/>
+      <propval name='list_size_limit' type='count' value='0'/>
+      <propval name='value_authorization' type='astring' value='solaris.smf.value.idmap'/>
+      <propval name='unresolvable_sid_mapping' type='boolean' value='true'/>
+      <propval name='machine_sid' type='astring' value='S-1-5-21-3354865030-1894476216-2728244158'/>
+      <propval name='domain_name' type='astring' value='dom.ad.atomiademo.com'/>
+      <propval name='directory_based_mapping' type='astring' value='idmu'/>
+    </property_group>
+    <property_group name='debug' type='application'>
+      <stability value='Unstable'/>
+      <propval name='all' type='integer' value='0'/>
+      <propval name='config' type='integer' value='0'/>
+      <propval name='discovery' type='integer' value='0'/>
+      <propval name='dns' type='integer' value='0'/>
+      <propval name='ldap' type='integer' value='0'/>
+      <propval name='mapping' type='integer' value='0'/>
+      <propval name='value_authorization' type='astring' value='solaris.smf.value.idmap'/>
+    </property_group>
+    <property_group name='general' type='framework'>
+      <property name='action_authorization' type='astring'/>
+      <property name='value_authorization' type='astring'/>
+    </property_group>
+    <stability value='Unstable'/>
+    <template>
+      <common_name>
+        <loctext xml:lang='C'>Native Identity Mapping Service</loctext>
+      </common_name>
+      <documentation>
+        <manpage title='idmapd' section='1M' manpath='/usr/share/man'/>
+        <manpage title='idmap' section='1M' manpath='/usr/share/man'/>
+      </documentation>
+    </template>
+  </service>
+</service_bundle>

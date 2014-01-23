@@ -1,0 +1,11 @@
+#!/usr/bin/expect -df
+
+set timeout 5 
+
+spawn smbadm join -u $::env(domain_admin_user)+$::env(domain_admin_pass) $::env(domain)
+expect { 
+	-re "\[no\]"
+	{
+	send -- "yes\r"
+	}
+}
