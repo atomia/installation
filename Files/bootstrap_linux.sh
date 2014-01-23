@@ -24,7 +24,6 @@ echo -e 'path /run\nallow *' >> /etc/puppet/auth.conf
 puppet agent --test
 
 echo "Please sign the certificate on the puppetmaster\npuppet cert sign $hostname \npress any key when done..."
-read wait
 
 service puppet start
 
