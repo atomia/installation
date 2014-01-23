@@ -11,7 +11,7 @@ SSH to the nexentastore server as root
 		nmc@nexenta:/$ !bash
 
 		# Set preferred domain controller
-		sharectl set -p pdc=IPDADDRESSOFSERVER
+		sharectl set -p pdc=IPDADDRESSOFSERVER smb
 		sharectl set -p lmauth_level=2 smb
 
 		# Test if dns is working 
@@ -29,11 +29,13 @@ SSH to the nexentastore server as root
 		# Join the domain
 		mkdir /root/atomiasetup
 		cd /root/atomiasetup
-		wget https://github.com/atomia/installation/raw/master/Storage/nexenta/package.tar.gz && tar -xvf package.tar.gz
+		wget https://github.com/atomia/installation/raw/master/Storage/Nexenta/package.tar.gz && tar -xvf package.tar.gz
 		cd adjoin
 		./set_variables.sh
 		apt-get install ldap-utils
-		./adjoin/adjoin -f
+		cd adjoin
+		./adjoin -f
+		cd ../
 		./ldapclient_setup.sh
 		smbadm join -u Administrator yourdomain.local
 

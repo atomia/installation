@@ -29,7 +29,7 @@ basedn="$baseDN"
 binduser="$bindUser"
 bindpass="$bindUserPassword"
 ldapservers="$ldapServers"
-nameserver="$nameServer”
+nameserver="$nameServer"
 EOF
 
 echo "Done..."
