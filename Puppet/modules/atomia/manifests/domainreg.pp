@@ -20,7 +20,7 @@ class atomia::domainreg (
         $opensrs_user  			= "opensrs",
         $opensrs_pass  			= "",
         $opensrs_url   			= "https://horizon.opensrs.net:55443/",
-        $opensrs_tlds  			= "com;net;org;info",
+        $opensrs_tlds  			= ["com","net","org","info"],
         $ssl_enabled            	= 0,
         $opensrs_only  			= 1,
 	$linux_software_auto_update 	= 0
