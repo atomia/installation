@@ -1,4 +1,4 @@
-installation
+This repository is obsolete
 ============
 
-Atomia Installation Repository!
+Please refer to https://github.com/atomia/puppet-atomia.
