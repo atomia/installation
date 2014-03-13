@@ -7,7 +7,7 @@ fi
 hostname=`hostname`
 dist=`cat /etc/*-release | egrep ^ID= | sed 's/.*=//'`
 
-if [ "$dist" -eq "ubuntu" ]; then
+if [ "$dist" = "ubuntu" ]; then
         wget http://apt.puppetlabs.com/puppetlabs-release-precise.deb
         sudo dpkg -i puppetlabs-release-precise.deb
 else
@@ -27,7 +27,7 @@ echo "Please sign the certificate on the puppetmaster\npuppet cert sign $hostnam
 
 service puppet start
 
-if [ "$dist" -eq "debian" ]; then
+if [ "$dist" = "debian" ]; then
         puppet agent --enable
 fi
 #Clean up
